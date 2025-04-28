@@ -24,33 +24,53 @@ export function Countdown({ date }: CountdownProps) {
     let timeLeft = {}
 
     if (difference > 0) {
+      const totalSeconds = Math.floor(difference / 1000)
+      const seconds = totalSeconds % 60
+      const totalMinutes = Math.floor(totalSeconds / 60)
+      const minutes = totalMinutes % 60
+      const totalHours = Math.floor(totalMinutes / 60)
+      const hours = totalHours % 24
+      const totalDays = Math.floor(totalHours / 24)
+
+      const years = Math.floor(totalDays / 365)
+      const remainingDaysAfterYears = totalDays % 365
+
+      const averageDaysInMonth = 30.44
+      const months = Math.floor(remainingDaysAfterYears / averageDaysInMonth)
+      const remainingDaysAfterMonths = Math.floor(remainingDaysAfterYears % averageDaysInMonth)
+
       timeLeft = {
-        dias: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        horas: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutos: Math.floor((difference / 1000 / 60) % 60),
-        segundos: Math.floor((difference / 1000) % 60),
+        anos: years,
+        meses: months,
+        dias: remainingDaysAfterMonths,
+        horas: hours,
+        minutos: minutes,
+        segundos: seconds,
       }
     }
 
     return timeLeft
   }
 
-  const timerComponents = Object.keys(timeLeft).map((interval) => {
-    if (!timeLeft[interval as keyof typeof timeLeft]) {
+  const timerComponents = ["anos", "meses", "dias", "horas", "minutos", "segundos"].map((interval) => {
+    const value = timeLeft[interval as keyof typeof timeLeft]
+
+    // Only render if the value is defined (countdown is active)
+    if (value === undefined) {
       return null
     }
 
     return (
       <CountdownUnit
         key={interval}
-        value={timeLeft[interval as keyof typeof timeLeft]}
-        label={interval.charAt(0).toUpperCase() + interval.slice(1)}
+        value={value}
+        label={interval === "anos" ? "Ano" : interval.charAt(0).toUpperCase() + interval.slice(1)}
       />
     )
   })
 
   return (
-    <div className="flex justify-center space-x-8 md:space-x-12">
+    <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto">
       {timerComponents.length ? (
         timerComponents
       ) : (
@@ -62,9 +82,11 @@ export function Countdown({ date }: CountdownProps) {
 
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
-    <div className="text-center">
+    <div className="text-center px-3 py-2 w-1/3 sm:w-1/3 md:w-auto">
       <div className="backdrop-blur-sm p-2">
-        <span className="text-4xl md:text-5xl font-light text-[#859098] dark:text-[#a5b0b8] block">{value}</span>
+        <span className="text-4xl md:text-5xl font-light text-[#859098] dark:text-[#a5b0b8] block">
+          {label === "Ano" ? value : String(value).padStart(2, "0")}
+        </span>
         <div className="w-12 h-[1px] bg-[#859098]/40 dark:bg-[#a5b0b8]/40 mx-auto my-2"></div>
         <span className="text-xs md:text-sm text-[#859098] dark:text-[#a5b0b8] uppercase tracking-widest">{label}</span>
       </div>

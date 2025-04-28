@@ -28,7 +28,7 @@ const dancingScript = Dancing_Script({
 export const metadata = {
   title: "Vitor & Laura",
   description: "Junte-se a nós para celebrar o casamento de Vitor e Laura",
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
