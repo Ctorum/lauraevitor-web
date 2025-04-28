@@ -3,38 +3,69 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 240, 245;
-  --background-end-rgb: 255, 255, 255;
+  --background: 218 43% 100%;
+  --foreground: 218 5% 10%;
+  --card: 218 43% 100%;
+  --card-foreground: 218 5% 15%;
+  --popover: 218 43% 100%;
+  --popover-foreground: 218 95% 10%;
+  --primary: 218 30.9% 48.2%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 218 30% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 180 30% 95%;
+  --muted-foreground: 218 5% 40%;
+  --accent: 180 30% 90%;
+  --accent-foreground: 218 5% 15%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 218 5% 100%;
+  --border: 218 30% 82%;
+  --input: 218 30% 50%;
+  --ring: 218 30.9% 48.2%;
+  --radius: 0.75rem;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+.dark {
+  --background: 218 43% 10%;
+  --foreground: 218 5% 100%;
+  --card: 218 43% 10%;
+  --card-foreground: 218 5% 100%;
+  --popover: 218 43% 5%;
+  --popover-foreground: 218 5% 100%;
+  --primary: 218 30.9% 48.2%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 218 30% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 180 30% 25%;
+  --muted-foreground: 218 5% 65%;
+  --accent: 180 30% 25%;
+  --accent-foreground: 218 5% 95%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 218 5% 100%;
+  --border: 218 30% 50%;
+  --input: 218 30% 50%;
+  --ring: 218 30.9% 48.2%;
+  --radius: 0.75rem;
 }
 
-@layer utilities {
-  .font-script {
-    font-family: var(--font-great-vibes), cursive;
-  }
-  .font-serif {
-    font-family: var(--font-playfair), serif;
-  }
+/* Animation utilities */
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.slide-in-from-bottom {
+  animation-name: slideInFromBottom;
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
-
