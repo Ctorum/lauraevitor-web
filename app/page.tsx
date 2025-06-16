@@ -6,7 +6,7 @@ import { ComingSoon } from "../components/coming-soon"
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-background dark:bg-gray-900 font-script">
-      <Header />
+      {/* <Header /> */}
 
       {/* Hero Section with Background */}
       <div className="h-screen w-full relative bg-white dark:bg-gray-900">
