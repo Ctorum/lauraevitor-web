@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, ShoppingCart, ChevronDown, X, Minus, Plus } from "lucide-react"
+import { Search, ShoppingCart, ChevronDown, X, Minus, Plus, Menu } from "lucide-react"
 
 interface Item {
   id: number
@@ -22,19 +22,21 @@ interface CardProps {
 
 const Card = ({ item, onAddToCart, onRemoveFromCart }: CardProps) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 flex flex-col">
-      <div className="h-32 bg-gray-100 flex items-center justify-center mb-3 rounded-full border-2 border-dashed border-gray-300">
+    <div className="bg-white p-3 sm:p-4 rounded-lg shadow-md border border-gray-200 flex flex-col">
+      <div className="h-24 sm:h-32 bg-gray-100 flex items-center justify-center mb-2 sm:mb-3 rounded-full border-2 border-dashed border-gray-300">
         <span className="text-gray-400 text-xs text-center px-2">
           IMAGEM NÃO
           <br />
           DISPONÍVEL
         </span>
       </div>
-      <h3 className="text-sm text-gray-800 mb-2 flex-grow text-center">{item.name}</h3>
-      <p className="font-bold text-lg text-gray-900 mb-3 text-center">R$ {item.price.toFixed(2).replace(".", ",")}</p>
+      <h3 className="text-xs sm:text-sm text-gray-800 mb-2 flex-grow text-center">{item.name}</h3>
+      <p className="font-bold text-sm sm:text-lg text-gray-900 mb-2 sm:mb-3 text-center">
+        R$ {item.price.toFixed(2).replace(".", ",")}
+      </p>
       <button
         onClick={() => (item.inCart ? onRemoveFromCart(item.id) : onAddToCart(item.id))}
-        className={`px-4 py-2 rounded text-white text-sm font-medium transition-colors ${
+        className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded text-white text-xs sm:text-sm font-medium transition-colors ${
           item.inCart ? "bg-gray-400 hover:bg-gray-500" : "bg-blue-500 hover:bg-blue-600"
         }`}
       >
@@ -65,6 +67,8 @@ export default function WishlistPage() {
   const [showPriceFilter, setShowPriceFilter] = useState(false)
   const [showSortFilter, setShowSortFilter] = useState(false)
   const [showCart, setShowCart] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   // Load cart from localStorage on component mount
   useEffect(() => {
@@ -149,13 +153,57 @@ export default function WishlistPage() {
           return 0
       }
     })
+
   return (
-    
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 sm:gap-8">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-bold text-sm sm:text-base">LG</span>
+              </div>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-6">
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer">Páginas</span>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer">Lista de Presentes</span>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer">Confirmar Presença</span>
+              </nav>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          {showMobileMenu && (
+            <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
+              <nav className="flex flex-col gap-3">
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer py-2">Páginas</span>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer py-2">Lista de Presentes</span>
+                <span className="text-gray-600 hover:text-gray-900 cursor-pointer py-2">Confirmar Presença</span>
+              </nav>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Filter Section */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="bg-slate-600 text-white rounded-lg p-4 relative">
-          <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="bg-slate-600 text-white rounded-lg p-3 sm:p-4 relative">
+          {/* Desktop Filters */}
+          <div className="hidden sm:flex items-center gap-4">
             <span className="text-sm">Ordenar por</span>
 
             <div className="relative">
@@ -164,7 +212,7 @@ export default function WishlistPage() {
                   setShowPriceFilter(!showPriceFilter)
                   setShowSortFilter(false)
                 }}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1 ${
+                className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1 ${
                   sortBy === "price" ? "bg-blue-500 text-white" : "bg-slate-500 text-white hover:bg-slate-400"
                 }`}
               >
@@ -181,7 +229,7 @@ export default function WishlistPage() {
                   setShowSortFilter(!showSortFilter)
                   setShowPriceFilter(false)
                 }}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1 ${
+                className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1 ${
                   sortBy === "alphabetical" ? "bg-blue-500 text-white" : "bg-slate-500 text-white hover:bg-slate-400"
                 }`}
               >
@@ -190,7 +238,7 @@ export default function WishlistPage() {
               </button>
             </div>
 
-            <div className="flex-1 max-w-md relative ml-8">
+            <div className="flex-1 max-w-md relative ml-4 sm:ml-8">
               <input
                 type="text"
                 placeholder="Pesquisar... ex: geladeira"
@@ -208,7 +256,7 @@ export default function WishlistPage() {
                 onClick={() => setShowCart(!showCart)}
                 className="bg-slate-500 p-2 rounded hover:bg-slate-400 transition-colors relative"
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
                 {getTotalItems() > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {getTotalItems()}
@@ -218,7 +266,83 @@ export default function WishlistPage() {
             </div>
           </div>
 
-          {/* Price Filter Dropdown */}
+          {/* Mobile Filters */}
+          <div className="sm:hidden">
+            <div className="flex items-center justify-between mb-3">
+              <button
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+                className="flex items-center gap-2 text-sm"
+              >
+                <span>Filtros</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${showMobileFilters ? "rotate-180" : ""}`} />
+              </button>
+
+              <button
+                onClick={() => setShowCart(!showCart)}
+                className="bg-slate-500 p-2 rounded hover:bg-slate-400 transition-colors relative"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Pesquisar... ex: geladeira"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-slate-500 text-white placeholder-gray-300 px-4 py-2 rounded-full text-sm focus:outline-none focus:bg-slate-400"
+              />
+            </div>
+
+            {showMobileFilters && (
+              <div className="space-y-3 pt-3 border-t border-slate-500">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSortBy("price")}
+                    className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
+                      sortBy === "price" ? "bg-blue-500 text-white" : "bg-slate-500 text-white hover:bg-slate-400"
+                    }`}
+                  >
+                    Preço
+                  </button>
+                  <button
+                    onClick={() => setSortBy("alphabetical")}
+                    className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
+                      sortBy === "alphabetical"
+                        ? "bg-blue-500 text-white"
+                        : "bg-slate-500 text-white hover:bg-slate-400"
+                    }`}
+                  >
+                    A-Z
+                  </button>
+                </div>
+
+                <div className="bg-slate-500 p-3 rounded">
+                  <div className="flex justify-between text-xs text-gray-300 mb-2">
+                    <span>R$ 0</span>
+                    <span>R$ 500</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="500"
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                  <div className="mt-2 text-xs text-gray-300">Até R$ {priceRange.toFixed(0)}</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Price Filter Dropdown */}
           {showPriceFilter && (
             <div className="absolute top-full left-20 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-20 w-80">
               <div className="flex justify-between items-center mb-2">
@@ -254,7 +378,7 @@ export default function WishlistPage() {
             </div>
           )}
 
-          {/* Sort Filter Dropdown */}
+          {/* Desktop Sort Filter Dropdown */}
           {showSortFilter && (
             <div className="absolute top-full left-32 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-20 w-48">
               <div className="flex justify-between items-center mb-2">
@@ -288,7 +412,11 @@ export default function WishlistPage() {
 
           {/* Cart Dropdown */}
           {showCart && (
-            <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 w-96 z-20">
+            <div
+              className={`absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-20 ${
+                window.innerWidth < 640 ? "w-80 max-w-[calc(100vw-2rem)]" : "w-96"
+              }`}
+            >
               <div className="p-4 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h3 className="text-gray-800 font-medium">Carrinho ({getTotalItems()} itens)</h3>
@@ -303,11 +431,11 @@ export default function WishlistPage() {
                 ) : (
                   cart.map((item) => (
                     <div key={item.id} className="p-4 border-b border-gray-100 flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="text-sm text-gray-800">{item.name}</h4>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm text-gray-800 truncate">{item.name}</h4>
                         <p className="text-sm text-gray-600">R$ {item.price.toFixed(2).replace(".", ",")}</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 ml-2">
                         <button
                           onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
                           className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300"
@@ -351,14 +479,14 @@ export default function WishlistPage() {
       </div>
 
       {/* Products Grid */}
-      <div className="max-w-7xl mx-auto px-6 pb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-6">
         <div className="mb-4 text-sm text-gray-600">
           {filteredItems.length} produto{filteredItems.length !== 1 ? "s" : ""} encontrado
           {filteredItems.length !== 1 ? "s" : ""}
         </div>
 
         {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6">
             {filteredItems.map((item) => (
               <Card key={item.id} item={item} onAddToCart={handleAddToCart} onRemoveFromCart={handleRemoveFromCart} />
             ))}
