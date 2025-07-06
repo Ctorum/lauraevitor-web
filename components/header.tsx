@@ -22,14 +22,12 @@ export default function Header() {
   return (
     <header className="w-full absolute top-0 left-0 z-20 px-4 py-6 m-200">
       <div className="container mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-4 flex justify-between items-center shadow-lg">
-        {/* Logo */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
             <Image src="/logo.png" alt="Laura & Vitor" width={40} height={40} className="h-10 w-10" />
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:block">
           <ul className="flex space-x-8">
             <li>
