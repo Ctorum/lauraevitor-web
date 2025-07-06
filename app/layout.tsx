@@ -2,6 +2,7 @@ import type React from "react"
 import "./globals.css"
 import { Inter, Playfair_Display, Great_Vibes, Noto_Sans, Dancing_Script } from "next/font/google"
 import { ThemeProvider } from "../components/theme-provider"
+import  Header from "../components/header";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const playfair = Playfair_Display({
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} ${greatVibes.variable} ${notoSans.variable} ${dancingScript.variable} font-sans`}
       >
+      {/* <Header/> */}
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {children}
         </ThemeProvider>

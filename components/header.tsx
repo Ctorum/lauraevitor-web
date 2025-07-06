@@ -20,7 +20,7 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full absolute top-0 left-0 z-20 px-4 py-6">
+    <header className="w-full absolute top-0 left-0 z-20 px-4 py-6 m-200">
       <div className="container mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-4 flex justify-between items-center shadow-lg">
         {/* Logo */}
         <div className="flex items-center">
