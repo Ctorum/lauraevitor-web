@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Component, ReactNode, useRef } from "react"
 import { useTheme } from "next-themes"
+
 
 interface CountdownProps {
   date: string
@@ -70,25 +71,77 @@ export function Countdown({ date }: CountdownProps) {
   })
 
   return (
-    <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto">
+    <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto font-script">
       {timerComponents.length ? (
         timerComponents
       ) : (
-        <span className="text-2xl font-script text-[#859098] dark:text-[#a5b0b8]">É hora do casamento!</span>
+        <span className="text-2xl font-script text-[#355A72] dark:text-[#a5b0b8]">É hora do casamento!</span>
       )}
     </div>
   )
 }
 
-function CountdownUnit({ value, label }: { value: number; label: string }) {
+export function CountdownUnit({ value, label }: { value: number; label: string }) {
+  const [prevValue, setPrevValue] = useState(value)
+  const [flipping, setFlipping] = useState(false)
+
+  useEffect(() => {
+    if (value !== prevValue) {
+      setFlipping(true)
+      const timeout = setTimeout(() => {
+        setPrevValue(value)
+        setFlipping(false)
+      }, 600)
+      return () => clearTimeout(timeout)
+    }
+  }, [value, prevValue])
+
+  const prevValueStr = String(prevValue).padStart(2, '0')
+  const nextValueStr = String(value).padStart(2, '0')
+
   return (
-    <div className="text-center px-3 py-2 w-1/3 sm:w-1/3 md:w-auto">
-      <div className="backdrop-blur-sm p-2">
-        <span className="text-4xl md:text-5xl font-light text-[#859098] dark:text-[#a5b0b8] block">
-          {label === "Ano" ? value : String(value).padStart(2, "0")}
-        </span>
-        <div className="w-12 h-[1px] bg-[#859098]/40 dark:bg-[#a5b0b8]/40 mx-auto my-2"></div>
-        <span className="text-xs md:text-sm text-[#859098] dark:text-[#a5b0b8] uppercase tracking-widest">{label}</span>
+    <div className="text-center px-2">
+      <hr className="relative z-[1000] top-[33px] bg-[white] w-[100%] h-[4px]" />
+      <div className="relative w-[80px] h-[60px] [perspective:1000px]">
+        {/* Parte de cima fixa */}
+        <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden z-10 bg-[#5D719A]">
+          <div className="flex items-end justify-center h-full">
+            <span className="text-white text-5xl leading-[1] translate-y-[50%]">
+              {nextValueStr}
+            </span>
+          </div>
+        </div>
+
+        {/* Parte de baixo fixa */}
+        <div className="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden z-10 bg-[#5D719A]">
+          <div className="flex items-start justify-center h-full">
+            <span className="text-white text-5xl leading-[1] -translate-y-[50%]">
+              {prevValueStr}
+            </span>
+          </div>
+        </div>
+
+        {/* Flip superior */}
+        {flipping && (
+          <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden z-20 bg-[#5D719A] origin-bottom animate-animate_flip_top">
+            <div className="flex items-end justify-center h-full">
+              <span className="text-white text-5xl leading-[1] translate-y-[50%]">
+                {nextValueStr}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Flip inferior */}
+        {flipping && (
+          <div className="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden z-30 bg-[#5D719A] origin-top animate-animate_flip_bottom">
+            <div className="flex items-start justify-center h-full">
+              <span className="text-white text-5xl leading-[1] -translate-y-[50%]">
+                {nextValueStr}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
