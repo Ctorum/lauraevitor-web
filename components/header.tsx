@@ -85,7 +85,7 @@ export default function Header() {
             className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {theme === "light" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
 
           {/* Mobile menu toggle */}
