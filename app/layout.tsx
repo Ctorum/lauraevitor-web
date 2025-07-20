@@ -49,7 +49,7 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} ${greatVibes.variable} ${notoSans.variable} ${dancingScript.variable} font-sans`}
       >
         <Header />
-        <main className="w-screen h-screen pt-24">
+        <main className="w-full h-screen pt-24">
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             {children}
           </ThemeProvider>

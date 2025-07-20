@@ -71,7 +71,7 @@ export function Countdown({ date }: CountdownProps) {
   })
 
   return (
-    <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto font-script">
+    <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto">
       {timerComponents.length ? (
         timerComponents
       ) : (
@@ -84,7 +84,6 @@ export function Countdown({ date }: CountdownProps) {
 export function CountdownUnit({ value, label }: { value: number; label: string }) {
   const [prevValue, setPrevValue] = useState(value)
   const [flipping, setFlipping] = useState(false)
-
   useEffect(() => {
     if (value !== prevValue) {
       setFlipping(true)
@@ -106,7 +105,7 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
         {/* Parte de cima fixa */}
         <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden z-10 bg-[#5D719A]">
           <div className="flex items-end justify-center h-full">
-            <span className="text-white text-5xl leading-[1] translate-y-[50%]">
+            <span className="font-script text-white text-5xl leading-[1] translate-y-[50%]">
               {nextValueStr}
             </span>
           </div>
@@ -115,7 +114,7 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
         {/* Parte de baixo fixa */}
         <div className="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden z-10 bg-[#5D719A]">
           <div className="flex items-start justify-center h-full">
-            <span className="text-white text-5xl leading-[1] -translate-y-[50%]">
+            <span className="font-script text-white text-5xl leading-[1] -translate-y-[50%]">
               {prevValueStr}
             </span>
           </div>
@@ -125,7 +124,7 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
         {flipping && (
           <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden z-20 bg-[#5D719A] origin-bottom animate-animate_flip_top">
             <div className="flex items-end justify-center h-full">
-              <span className="text-white text-5xl leading-[1] translate-y-[50%]">
+              <span className="font-script text-white text-5xl leading-[1] translate-y-[50%]">
                 {nextValueStr}
               </span>
             </div>
@@ -136,13 +135,14 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
         {flipping && (
           <div className="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden z-30 bg-[#5D719A] origin-top animate-animate_flip_bottom">
             <div className="flex items-start justify-center h-full">
-              <span className="text-white text-5xl leading-[1] -translate-y-[50%]">
+              <span className="font-script text-white text-5xl leading-[1] -translate-y-[50%]">
                 {nextValueStr}
               </span>
             </div>
           </div>
         )}
       </div>
+      <p className="font-[Noto_Sans] font-normal text-[1rem] text-[#355A72]">{label}</p>
     </div>
   )
 }
