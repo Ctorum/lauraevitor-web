@@ -8,7 +8,16 @@ import { useEffect, useState } from "react";
 
 export function History() {
   const [val, setVal] = useState(0);
-  const [screenSize, setScreenSize] = useState(window.innerWidth)
+  const [screenSize, setScreenSize] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    setScreenSize(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -18,9 +27,9 @@ export function History() {
   }, []);
 
   useEffect(() => {
-    if(screenSize > 2100){
+    if(screenSize && screenSize > 2100){
       setVal(3)
-    } else {
+    } else if(screenSize) {
       setVal(Math.floor((screenSize / 239.4) / 2));
     }
   }, [screenSize])

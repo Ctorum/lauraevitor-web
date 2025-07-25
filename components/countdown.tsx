@@ -2,37 +2,28 @@
 
 import { useState, useEffect, Component, ReactNode, useRef } from "react"
 import { useTheme } from "next-themes"
-
+import { intervalToDuration } from "date-fns";
 
 interface CountdownProps {
   date: string
 }
 
 function calculateTimeLeft(date: string) {
-  const difference = +new Date(date) - +new Date()
-  if (difference <= 0) return {}
+  const now = new Date();
+  const target = new Date(date);
 
-  const totalSeconds = Math.floor(difference / 1000)
-  const seconds = totalSeconds % 60
-  const totalMinutes = Math.floor(totalSeconds / 60)
-  const minutes = totalMinutes % 60
-  const totalHours = Math.floor(totalMinutes / 60)
-  const hours = totalHours % 24
-  const totalDays = Math.floor(totalHours / 24)
+  if (target <= now) return {};
 
-  const years = Math.floor(totalDays / 365)
-  const remainingDaysAfterYears = totalDays % 365
-  const months = Math.floor(remainingDaysAfterYears / 30.44)
-  const remainingDaysAfterMonths = Math.floor(remainingDaysAfterYears % 30.44)
+  const duration = intervalToDuration({ start: now, end: target });
 
   return {
-    anos: years,
-    meses: months,
-    dias: remainingDaysAfterMonths,
-    horas: hours,
-    minutos: minutes,
-    segundos: seconds,
-  }
+    anos: duration.years || 0,
+    meses: duration.months || 0,
+    dias: duration.days || 0,
+    horas: duration.hours || 0,
+    minutos: duration.minutes || 0,
+    segundos: duration.seconds || 0,
+  };
 }
 
 export function Countdown({ date }: CountdownProps) {
@@ -69,7 +60,7 @@ export function Countdown({ date }: CountdownProps) {
       {timerComponents.length ? (
         timerComponents
       ) : (
-        <span className="text-2xl font-script text-[#355A72] dark:text-[#a5b0b8]">É hora do casamento!</span>
+        <span className="w-full text-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8] py-[6rem]">É hora do casamento!</span>
       )}
     </div>
   )
@@ -109,7 +100,7 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
         <div className="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden z-10 bg-[#5D719A]">
           <div className="flex items-start justify-center h-full">
             <span className="font-script text-white text-5xl leading-[1] -translate-y-[50%]">
-              {prevValueStr}
+              {nextValueStr}
             </span>
           </div>
         </div>
@@ -119,7 +110,7 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
           <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden z-20 bg-[#5D719A] origin-bottom animate-animate_flip_top">
             <div className="flex items-end justify-center h-full">
               <span className="font-script text-white text-5xl leading-[1] translate-y-[50%]">
-                {nextValueStr}
+                {prevValueStr}
               </span>
             </div>
           </div>

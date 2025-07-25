@@ -21,7 +21,16 @@ export function SectionGallery() {
     ]
 
     const [val, setVal] = useState(0);
-    const [screenSize, setScreenSize] = useState(window.innerWidth)
+    const [screenSize, setScreenSize] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    setScreenSize(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
     useEffect(() => {
         const handleResize = () => setScreenSize(window.innerWidth);
@@ -31,12 +40,12 @@ export function SectionGallery() {
     }, []);
 
     useEffect(() => {
-        if(screenSize > 2100){
-        setVal(3)
-        } else {
-        setVal(Math.floor((screenSize / 239.4) / 2));
+        if(screenSize && screenSize > 2100){
+          setVal(3)
+        } else if(screenSize) {
+          setVal(Math.floor((screenSize / 239.4) / 2));
         }
-    }, [screenSize])
+      }, [screenSize])
 
     return(
         <section className="h-screen w-full pt-[2rem] flex flex-col items-center justify-center">
