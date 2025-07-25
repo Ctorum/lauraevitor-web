@@ -46,14 +46,16 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${playfair.variable} ${greatVibes.variable} ${notoSans.variable} ${dancingScript.variable} font-sans`}
+        className={`${inter.variable} ${playfair.variable} ${greatVibes.variable} ${notoSans.variable} ${dancingScript.variable} font-sans w-full flex items-center justify-center`}
       >
-        <Header />
-        <main className="w-full h-screen pt-24">
+        <div className="w-full max-w-[2100px] ">
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-            {children}
+            <Header />
+            <main className="w-full h-screen">
+                {children}
+            </main>
           </ThemeProvider>
-        </main>
+        </div>
       </body>
     </html>
   );

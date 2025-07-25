@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Carousel,
     CarouselContent,
@@ -8,6 +10,8 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
+import PlantLine from "./plant-line"
+import { useState, useEffect } from "react"
 
 export function SectionGallery() {
     const gallery = [
@@ -16,21 +20,43 @@ export function SectionGallery() {
         },
     ]
 
+    const [val, setVal] = useState(0);
+    const [screenSize, setScreenSize] = useState(window.innerWidth)
+
+    useEffect(() => {
+        const handleResize = () => setScreenSize(window.innerWidth);
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        if(screenSize > 2100){
+        setVal(3)
+        } else {
+        setVal(Math.floor((screenSize / 239.4) / 2));
+        }
+    }, [screenSize])
+
     return(
-        <section className="w-full mt-[5rem] md:mt-[15rem] pt-[2rem] flex flex-col items-center justify-center">
-            <h2 className="text-[2rem] font-bold italic text-[#355A72] relative top-[1.5rem]">FOTOS</h2>
-            <div className="bg-[#B3C7D0] w-full h-[30rem] flex items-center justify-center">
+        <section className="h-screen w-full pt-[2rem] flex flex-col items-center justify-center">
+            <div className="relative w-full flex flex-row items-center justify-center">
+                <PlantLine amount={val} className="pl-[3rem] group bg-transparent hidden md:flex overflow-hidden absolute z-[1] bottom-[-2.5rem] left-[-2rem] w-full" />
+                <h2 className="relative z-[10] text-[2rem] font-bold italic dark:text-[#fff] text-[#355A72] relative top-[1.5rem]">FOTOS</h2>
+                <PlantLine amount={val} className="scale-x-[-1] group bg-transparent hidden md:flex overflow-hidden absolute z-[1] bottom-[-2.5rem] w-full" />
+            </div>
+            <div className="dark:bg-[#355A72] bg-[#B3C7D0] w-full h-[50rem] flex items-center justify-center">
                 <Carousel  opts={{
                     align: "start",
                 }}
-                className="w-full max-w-[50%] hidden md:flex bg-[#B3C7D0]">
+                className="w-full max-w-[50%] hidden md:flex dark:bg-[#355A72] bg-[#B3C7D0] cursor-move">
                 <CarouselContent>
                     {Array.from({ length: 5 }).map((_, index) => (
-                    <CarouselItem key={index} className="bg-[#B3C7D0] md:basis-2/2 lg:basis-3/3">
-                        <div className="bg-[#B3C7D0] flex items-center justify-center">
-                        <Card className="border-[0] w-[512px] rounded-[0] bg-[#B3C7D0]">
-                            <CardContent className="flex aspect-square items-center justify-center w-[512px] h-[424px] bg-[#B3C7D0]">
-                            <Image src={gallery[0].url} alt="img" width={512} height={424} className="bg-[none]"/>
+                    <CarouselItem key={index} className="dark:bg-[#355A72] bg-[#B3C7D0] md:basis-2/2 lg:basis-3/3">
+                        <div className="dark:bg-[#355A72] bg-[#B3C7D0] flex items-center justify-center">
+                        <Card className="border-[0] w-[512px] rounded-[0] dark:bg-[#355A72] bg-[#B3C7D0]">
+                            <CardContent className="flex aspect-square items-center justify-center w-[512px] h-[424px] dark:bg-[#355A72] bg-[#B3C7D0]">
+                                <Image src={gallery[0].url} alt="img" width={512} height={424} className="bg-[none]"/>
                             </CardContent>
                         </Card>
                         </div>

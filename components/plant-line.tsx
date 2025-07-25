@@ -20,7 +20,7 @@ function Batch() {
       <img
         src="/images/plant-frac-1.png"
         alt="Plant fract 1"
-        className="-ml-10 mt-4 z-[1]"
+        className="-ml-10 mt-4 z-[1] group-[.bg-transparent]:hidden"
       />
     </span>
   );
@@ -35,7 +35,7 @@ export default function PlantLine({
       {...props}
       className={cn("h-20 flex items-center overflow-visible", props.className)}
     >
-      <div className="w-full h-1 bg-third absolute" />
+      <div className={`w-full h-1 bg-third group-[.bg-transparent]:bg-transparent absolute`} />
 
       {Array(amount)
         .fill(0)

@@ -8,64 +8,58 @@ interface CountdownProps {
   date: string
 }
 
+function calculateTimeLeft(date: string) {
+  const difference = +new Date(date) - +new Date()
+  if (difference <= 0) return {}
+
+  const totalSeconds = Math.floor(difference / 1000)
+  const seconds = totalSeconds % 60
+  const totalMinutes = Math.floor(totalSeconds / 60)
+  const minutes = totalMinutes % 60
+  const totalHours = Math.floor(totalMinutes / 60)
+  const hours = totalHours % 24
+  const totalDays = Math.floor(totalHours / 24)
+
+  const years = Math.floor(totalDays / 365)
+  const remainingDaysAfterYears = totalDays % 365
+  const months = Math.floor(remainingDaysAfterYears / 30.44)
+  const remainingDaysAfterMonths = Math.floor(remainingDaysAfterYears % 30.44)
+
+  return {
+    anos: years,
+    meses: months,
+    dias: remainingDaysAfterMonths,
+    horas: hours,
+    minutos: minutes,
+    segundos: seconds,
+  }
+}
+
 export function Countdown({ date }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const [timeLeft, setTimeLeft] = useState<Partial<Record<string, number>>>({});
   const { theme } = useTheme()
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft())
-    }, 1000)
+    const updateTime = () => setTimeLeft(calculateTimeLeft(date))
+    updateTime() // executa imediatamente
+    const interval = setInterval(updateTime, 1000)
+    return () => clearInterval(interval)
+  }, [date])
 
-    return () => clearTimeout(timer)
-  })
-
-  function calculateTimeLeft() {
-    const difference = +new Date(date) - +new Date()
-    let timeLeft = {}
-
-    if (difference > 0) {
-      const totalSeconds = Math.floor(difference / 1000)
-      const seconds = totalSeconds % 60
-      const totalMinutes = Math.floor(totalSeconds / 60)
-      const minutes = totalMinutes % 60
-      const totalHours = Math.floor(totalMinutes / 60)
-      const hours = totalHours % 24
-      const totalDays = Math.floor(totalHours / 24)
-
-      const years = Math.floor(totalDays / 365)
-      const remainingDaysAfterYears = totalDays % 365
-
-      const averageDaysInMonth = 30.44
-      const months = Math.floor(remainingDaysAfterYears / averageDaysInMonth)
-      const remainingDaysAfterMonths = Math.floor(remainingDaysAfterYears % averageDaysInMonth)
-
-      timeLeft = {
-        anos: years,
-        meses: months,
-        dias: remainingDaysAfterMonths,
-        horas: hours,
-        minutos: minutes,
-        segundos: seconds,
-      }
-    }
-
-    return timeLeft
+  if (!timeLeft) {
+    return (
+      <div className="flex justify-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8]">
+      </div>
+    )
   }
 
-  const timerComponents = ["anos", "meses", "dias", "horas", "minutos", "segundos"].map((interval) => {
-    const value = timeLeft[interval as keyof typeof timeLeft]
-
-    // Only render if the value is defined (countdown is active)
-    if (value === undefined) {
-      return null
-    }
-
+  const timerComponents = Object.entries(timeLeft).map(([key, value]) => {
+    if (value === undefined) return null
     return (
       <CountdownUnit
-        key={interval}
+        key={key}
         value={value}
-        label={interval === "anos" ? "Ano" : interval.charAt(0).toUpperCase() + interval.slice(1)}
+        label={key === "anos" ? "Ano" : key.charAt(0).toUpperCase() + key.slice(1)}
       />
     )
   })

@@ -20,12 +20,13 @@ export default function Header() {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
-    <header className="w-full absolute top-0 left-0 z-20 px-4 py-6 m-200 h-header">
+    <header className="w-full max-w-[2100px] absolute z-20 px-4 py-6 m-200 h-header">
       <div className="container mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
