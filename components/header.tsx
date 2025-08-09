@@ -43,46 +43,19 @@ export default function Header() {
         <nav className="hidden md:block">
           <ul className="flex space-x-8">
             <li>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-gray-400 dark:text-gray-500 flex items-center cursor-not-allowed opacity-70">
-                      PÁGINAS <Lock className="ml-1 h-3 w-3" />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Em breve disponível</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Link href="/pictures" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
+                FOTOS
+              </Link>
             </li>
             <li>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-gray-400 dark:text-gray-500 flex items-center cursor-not-allowed opacity-70">
-                      PRESENTES <Lock className="ml-1 h-3 w-3" />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Em breve disponível</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Link href="/gifts" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
+                PRESENTES
+              </Link>
             </li>
             <li>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-gray-400 dark:text-gray-500 flex items-center cursor-not-allowed opacity-70">
-                      CONFIRMAR PRESENÇA <Lock className="ml-1 h-3 w-3" />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Em breve disponível</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Link href="/rsvp" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
+                CONFIRMAR PRESENÇA
+              </Link>
             </li>
           </ul>
         </nav>
@@ -128,22 +101,19 @@ export default function Header() {
             <nav>
               <ul className="space-y-6 py-4">
                 <li>
-                  <span className="text-gray-400 dark:text-gray-500 flex items-center justify-between text-lg cursor-not-allowed opacity-70">
-                    <span>PÁGINAS</span>
-                    <Lock className="h-4 w-4" />
-                  </span>
+                  <Link href="/pictures" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center justify-between text-lg" onClick={toggleMobileMenu}>
+                    <span>FOTOS</span>
+                  </Link>
                 </li>
                 <li>
-                  <span className="text-gray-400 dark:text-gray-500 flex items-center justify-between text-lg cursor-not-allowed opacity-70">
+                  <Link href="/gifts" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center justify-between text-lg" onClick={toggleMobileMenu}>
                     <span>PRESENTES</span>
-                    <Lock className="h-4 w-4" />
-                  </span>
+                  </Link>
                 </li>
                 <li>
-                  <span className="text-gray-400 dark:text-gray-500 flex items-center justify-between text-lg cursor-not-allowed opacity-70">
+                  <Link href="/rsvp" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center justify-between text-lg" onClick={toggleMobileMenu}>
                     <span>CONFIRMAR PRESENÇA</span>
-                    <Lock className="h-4 w-4" />
-                  </span>
+                  </Link>
                 </li>
               </ul>
             </nav>

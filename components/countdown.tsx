@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState, useEffect, Component, ReactNode, useRef } from "react"
-import { useTheme } from "next-themes"
+import { useState, useEffect, Component, ReactNode, useRef } from "react";
+import { useTheme } from "next-themes";
 import { intervalToDuration } from "date-fns";
 
 interface CountdownProps {
-  date: string
+  date: string;
 }
 
 function calculateTimeLeft(date: string) {
@@ -28,60 +28,69 @@ function calculateTimeLeft(date: string) {
 
 export function Countdown({ date }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState<Partial<Record<string, number>>>({});
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   useEffect(() => {
-    const updateTime = () => setTimeLeft(calculateTimeLeft(date))
-    updateTime() // executa imediatamente
-    const interval = setInterval(updateTime, 1000)
-    return () => clearInterval(interval)
-  }, [date])
+    const updateTime = () => setTimeLeft(calculateTimeLeft(date));
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, [date]);
 
   if (!timeLeft) {
     return (
-      <div className="flex justify-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8]">
-      </div>
-    )
+      <div className="flex justify-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8]"></div>
+    );
   }
 
   const timerComponents = Object.entries(timeLeft).map(([key, value]) => {
-    if (value === undefined) return null
+    if (value === undefined) return null;
     return (
       <CountdownUnit
         key={key}
         value={value}
-        label={key === "anos" ? "Ano" : key.charAt(0).toUpperCase() + key.slice(1)}
+        label={
+          key === "anos" ? "Ano" : key.charAt(0).toUpperCase() + key.slice(1)
+        }
       />
-    )
-  })
+    );
+  });
 
   return (
     <div className="flex flex-wrap justify-center md:flex-nowrap md:justify-between max-w-6xl mx-auto">
       {timerComponents.length ? (
         timerComponents
       ) : (
-        <span className="w-full text-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8] py-[6rem]">É hora do casamento!</span>
+        <span className="w-full text-center text-2xl font-script text-[#355A72] dark:text-[#a5b0b8] py-[6rem]">
+          É hora do casamento!
+        </span>
       )}
     </div>
-  )
+  );
 }
 
-export function CountdownUnit({ value, label }: { value: number; label: string }) {
-  const [prevValue, setPrevValue] = useState(value)
-  const [flipping, setFlipping] = useState(false)
+export function CountdownUnit({
+  value,
+  label,
+}: {
+  value: number;
+  label: string;
+}) {
+  const [prevValue, setPrevValue] = useState(value);
+  const [flipping, setFlipping] = useState(false);
   useEffect(() => {
     if (value !== prevValue) {
-      setFlipping(true)
+      setFlipping(true);
       const timeout = setTimeout(() => {
-        setPrevValue(value)
-        setFlipping(false)
-      }, 600)
-      return () => clearTimeout(timeout)
+        setPrevValue(value);
+        setFlipping(false);
+      }, 600);
+      return () => clearTimeout(timeout);
     }
-  }, [value, prevValue])
+  }, [value, prevValue]);
 
-  const prevValueStr = String(prevValue).padStart(2, '0')
-  const nextValueStr = String(value).padStart(2, '0')
+  const prevValueStr = String(prevValue).padStart(2, "0");
+  const nextValueStr = String(value).padStart(2, "0");
 
   return (
     <div className="text-center px-2">
@@ -127,7 +136,9 @@ export function CountdownUnit({ value, label }: { value: number; label: string }
           </div>
         )}
       </div>
-      <p className="font-[Noto_Sans] font-normal text-[1rem] text-[#355A72]">{label}</p>
+      <p className="font-[Noto_Sans] font-normal text-[1rem] text-[#355A72]">
+        {label}
+      </p>
     </div>
-  )
+  );
 }
