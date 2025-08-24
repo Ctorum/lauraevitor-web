@@ -33,7 +33,6 @@ export default function Pictures() {
 
    return (
       <div className="min-h-screen w-full bg-background dark:bg-gray-900">
-         <Header />
          <main className="container mx-auto px-4 pt-32 pb-8">
             <MasonryGallery items={defaultItems}/>
          </main>
