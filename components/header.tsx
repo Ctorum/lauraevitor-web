@@ -39,25 +39,34 @@ export default function Header() {
                     </Link>
                 </div>
 
-        <nav className="hidden md:block">
-          <ul className="flex space-x-8">
-            <li>
-              <Link href="/clothing" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
-                FOTOS
-              </Link>
-            </li>
-            <li>
-              <Link href="/gifts" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
-                PRESENTES
-              </Link>
-            </li>
-            <li>
-              <Link href="/rsvp" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
-                CONFIRMAR PRESENÇA
-              </Link>
-            </li>
-          </ul>
-        </nav>
+                <nav className="hidden md:block">
+                    <ul className="flex space-x-8">
+                        <li>
+                            <Link
+                                href="/clothing"
+                                className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center"
+                            >
+                                VESTIMENTAS
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/gifts"
+                                className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center"
+                            >
+                                PRESENTES
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                href="/rsvp"
+                                className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center"
+                            >
+                                CONFIRMAR PRESENÇA
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
 
                 {/* Mobile Menu Button */}
                 <div className="flex items-center space-x-4">

@@ -4,156 +4,156 @@
 @tailwind utilities;
 
 :root {
-  --background: 218 43% 100%;
-  --foreground: 218 5% 10%;
-  --card: 218 43% 100%;
-  --card-foreground: 218 5% 15%;
-  --popover: 218 43% 100%;
-  --popover-foreground: 218 95% 10%;
-  --primary: 218 30.9% 48.2%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 218 30% 90%;
-  --secondary-foreground: 0 0% 0%;
-  --third: 204 37% 33%;
-  --third-foreground: 0 0% 100%;
-  --muted: 180 30% 95%;
-  --muted-foreground: 218 5% 40%;
-  --accent: 180 30% 90%;
-  --accent-foreground: 218 5% 15%;
-  --destructive: 0 50% 50%;
-  --destructive-foreground: 218 5% 100%;
-  --border: 218 30% 82%;
-  --input: 218 30% 50%;
-  --ring: 218 30.9% 48.2%;
-  --radius: 1.5rem;
+    --background: 218 43% 100%;
+    --foreground: 218 5% 10%;
+    --card: 218 43% 100%;
+    --card-foreground: 218 5% 15%;
+    --popover: 218 43% 100%;
+    --popover-foreground: 218 95% 10%;
+    --primary: 218 30.9% 48.2%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 218 30% 90%;
+    --secondary-foreground: 0 0% 0%;
+    --third: 204 37% 33%;
+    --third-foreground: 0 0% 100%;
+    --muted: 180 30% 95%;
+    --muted-foreground: 218 5% 40%;
+    --accent: 180 30% 90%;
+    --accent-foreground: 218 5% 15%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 218 5% 100%;
+    --border: 218 30% 82%;
+    --input: 218 30% 50%;
+    --ring: 218 30.9% 48.2%;
+    --radius: 1.5rem;
 }
 
 .dark {
-  --background: 218 43% 10%;
-  --foreground: 218 5% 100%;
-  --card: 218 43% 10%;
-  --card-foreground: 218 5% 100%;
-  --popover: 218 43% 5%;
-  --popover-foreground: 218 5% 100%;
-  --primary: 218 30.9% 48.2%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 218 30% 20%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 180 30% 25%;
-  --muted-foreground: 218 5% 65%;
-  --accent: 180 30% 25%;
-  --accent-foreground: 218 5% 95%;
-  --destructive: 0 50% 50%;
-  --destructive-foreground: 218 5% 100%;
-  --border: 218 30% 50%;
-  --input: 218 30% 50%;
-  --ring: 218 30.9% 48.2%;
-  --radius: 0.75rem;
+    --background: 218 43% 10%;
+    --foreground: 218 5% 100%;
+    --card: 218 43% 10%;
+    --card-foreground: 218 5% 100%;
+    --popover: 218 43% 5%;
+    --popover-foreground: 218 5% 100%;
+    --primary: 218 30.9% 48.2%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 218 30% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 180 30% 25%;
+    --muted-foreground: 218 5% 65%;
+    --accent: 180 30% 25%;
+    --accent-foreground: 218 5% 95%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 218 5% 100%;
+    --border: 218 30% 50%;
+    --input: 218 30% 50%;
+    --ring: 218 30.9% 48.2%;
+    --radius: 0.75rem;
 }
 
 /* Animation utilities */
 .animate-in {
-  animation-duration: 300ms;
-  animation-timing-function: ease-out;
-  animation-fill-mode: both;
+    animation-duration: 300ms;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
 }
 
 .slide-in-from-bottom {
-  animation-name: slideInFromBottom;
+    animation-name: slideInFromBottom;
 }
 
 .img-cs {
-  position: relative;
+    position: relative;
 }
 
-.img-cs::before{
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  inset: -0.5rem;
-  top: -1.3rem;
-  left: -0.36rem;
-  z-index: 999;
-  background-image: url(/images/circle-flowers.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 28rem;
-}
-
-.lv{
-  background: transparent;
-  position: relative;
-  border-radius: 100%;
-}
-
-.lv::before{
-  content: " ";
-  display: block;
-  position: absolute;
-  border-radius: 100%;
-
-  width: 73%;
-  height: 73%;
-  top: 10%;
-  left: 12.5%;
-  z-index: 2;
-
-  background: white;
-}
-
-.lv::after{
-  content: " ";
-  display: block;
-  position: absolute;
-  border-radius: 100%;
-
-  width: 70%;
-  height: 70%;
-  top: 15%;
-  left: 20%;
-  z-index: 1;
-
-  background: #5D94E4;
-}
-
-.last{
-  background-image: url('/images/vl-img1.svg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-@media (min-width: 768px) {
-  .img-cs::before{
+.img-cs::before {
     content: " ";
     display: block;
     position: absolute;
-    width: 110%;
-    height: 110%;
+    width: 100%;
+    height: 100%;
     inset: -0.5rem;
-    top: 0;
-    left: -2.5rem;
+    top: -1.3rem;
+    left: -0.36rem;
     z-index: 999;
     background-image: url(/images/circle-flowers.svg);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 120%;
-  } 
+    background-size: 28rem;
+}
 
-  .lv::before{
-    content: '';
-  }
+.lv {
+    background: transparent;
+    position: relative;
+    border-radius: 100%;
+}
+
+.lv::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    border-radius: 100%;
+
+    width: 73%;
+    height: 73%;
+    top: 10%;
+    left: 12.5%;
+    z-index: 2;
+
+    background: white;
+}
+
+.lv::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    border-radius: 100%;
+
+    width: 70%;
+    height: 70%;
+    top: 15%;
+    left: 20%;
+    z-index: 1;
+
+    background: #5d94e4;
+}
+
+.last {
+    background-image: url("/images/vl-img1.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@media (min-width: 768px) {
+    .img-cs::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        width: 110%;
+        height: 110%;
+        inset: -0.5rem;
+        top: 0;
+        left: -2.5rem;
+        z-index: 999;
+        background-image: url(/images/circle-flowers.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 120%;
+    }
+
+    .lv::before {
+        content: "";
+    }
 }
 
 @keyframes slideInFromBottom {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
