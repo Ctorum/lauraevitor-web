@@ -43,7 +43,7 @@ export default function Header() {
         <nav className="hidden md:block">
           <ul className="flex space-x-8">
             <li>
-              <Link href="/pictures" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
+              <Link href="/clothing" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary flex items-center">
                 FOTOS
               </Link>
             </li>
