@@ -35,11 +35,12 @@ export default function OtherPaymentPage({
   cart,
   totalPrice,
   onBack,
-  onComplete,
   onUpdateCart,
   onRemoveFromCart,
 }: OtherPaymentPageProps) {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
 
   const formatBRL = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -48,9 +49,53 @@ export default function OtherPaymentPage({
     }).format(value);
   };
 
+  const createPurchase = async () => {
+    setIsProcessing(true);
+
+    const purchaseData = {
+      items: cart.map((item) => ({
+        id: item.id.toString(),
+        title: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+      })),
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/purchases`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(purchaseData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Purchase created:", result);
+
+      if (result?.data?.id) {
+        console.log(result.data.id);
+        setPreferenceId(result.data.id);
+      }
+    } catch (error) {
+      console.error("Error creating purchase:", error);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   useEffect(() => {
-    initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY as string)
-  }, [])
+    createPurchase();
+    initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY as string);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -78,59 +123,17 @@ export default function OtherPaymentPage({
         </Badge>
       </div>
 
-      {/* Order Summary */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Itens do Pedido</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {cart.map((item) => (
-            <div key={item.id} className="flex items-center gap-2 py-1 text-sm">
-              <div className="flex-1">
-                <span className="font-medium">{item.name}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-6 w-6 p-0 bg-transparent"
-                  onClick={() => {
-                    if (item.quantity > 1) {
-                      onUpdateCart(item.id, item.quantity - 1);
-                    } else {
-                      onRemoveFromCart(item.id);
-                    }
-                  }}
-                >
-                  {item.quantity > 1 ? (
-                    <Minus className="h-2 w-2" />
-                  ) : (
-                    <Trash2 className="h-2 w-2" />
-                  )}
-                </Button>
-                <span className="w-6 text-center text-xs">{item.quantity}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-6 w-6 p-0 bg-transparent"
-                  onClick={() => onUpdateCart(item.id, item.quantity + 1)}
-                >
-                  <Plus className="h-2 w-2" />
-                </Button>
-              </div>
-              <span className="w-16 text-right font-medium text-xs">
-                {formatBRL(item.price * item.quantity)}
-              </span>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
       <div className="space-y-3">
         <h3 className="font-semibold text-lg">
           Métodos de Pagamento Disponíveis
         </h3>
-        <Wallet initialization={{ preferenceId: "1102314820-13892f13-c6d6-4f0b-9b0a-8ce17880b851" }} />
+        {preferenceId && (
+          <Wallet
+            initialization={{
+              preferenceId: preferenceId,
+            }}
+          />
+        )}
       </div>
 
       {selectedMethod && (

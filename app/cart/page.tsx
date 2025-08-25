@@ -3,17 +3,7 @@
 import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { X, Minus, Plus } from "lucide-react";
-
-interface Item {
-  id: number;
-  name: string;
-  price: number;
-  inCart: boolean;
-}
-
-interface CartItem extends Item {
-  quantity: number;
-}
+import { CartItem } from "@/lib/types";
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -29,11 +19,11 @@ export default function CartPage() {
     localStorage.setItem("wishlist-cart", JSON.stringify(cart));
   }, [cart]);
 
-  const handleRemoveFromCart = (itemId: number) => {
+  const handleRemoveFromCart = (itemId: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
   };
 
-  const updateCartQuantity = (itemId: number, newQuantity: number) => {
+  const updateCartQuantity = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       handleRemoveFromCart(itemId);
     } else {
