@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
     Loader2,
     Mail,
@@ -14,22 +14,20 @@ import {
     Check,
     X,
     Clock,
+    Pencil,
 } from "lucide-react";
 import api from "@/services/api.service";
 import { getEventStatusLabel } from "@/lib/get-event-status-label";
 import { Input } from "./ui/input";
 import { InputMask } from "@react-input/mask";
 import { cn } from "@/lib/utils";
+import Animated from "./animated";
 
-async function updateRSVPStatus(
-    token: string,
-    eventType: string,
-    status: GuestEventStatus,
-) {
+async function updateGuestDetails(token: string, data: Partial<Guest>) {
+    console.log(data);
     const response = await api.put(`/guests`, {
+        ...data,
         invitationCode: token,
-        rsvpStatusFirst: eventType === "first" ? status : undefined,
-        rsvpStatusSecond: eventType === "second" ? status : undefined,
     });
 
     return response.data;
@@ -50,7 +48,37 @@ export default function GuestDetails({
     const [celebratingEvent, setCelebratingEvent] = useState<string | null>(
         null,
     );
+    const [celebratingDataUpdate, setCelebratingDataUpdate] = useState<
+        string | null
+    >(null);
 
+    const [name, setName] = useState<string | null>(guest?.name || null);
+    const [email, setEmail] = useState<string | null>(guest?.email || null);
+    const [phone, setPhone] = useState<string | null>(guest?.phone || null);
+
+    const nameInputRef = useRef<HTMLInputElement>(null);
+
+    const dataMutation = useMutation({
+        mutationFn: ({
+            token,
+            data,
+        }: {
+            token: string;
+            data: Partial<Guest>;
+        }) => updateGuestDetails(token, data),
+        onSuccess: (data, variables) => {
+            setCelebratingDataUpdate("data");
+            setTimeout(() => {
+                setCelebratingDataUpdate(null);
+            }, 1500);
+            queryClient.invalidateQueries({
+                queryKey: ["guest", guest?.invitationCode],
+            });
+        },
+        onError: (error, variables, context) => {
+            console.error(error);
+        },
+    });
     const rsvpMutation = useMutation({
         mutationFn: ({
             token,
@@ -60,9 +88,13 @@ export default function GuestDetails({
             token: string;
             eventType: string;
             status: GuestEventStatus;
-        }) => updateRSVPStatus(token, eventType, status),
+        }) =>
+            updateGuestDetails(token, {
+                rsvpStatusFirst: eventType === "first" ? status : undefined,
+                rsvpStatusSecond: eventType === "second" ? status : undefined,
+            }),
         onSuccess: (data, variables) => {
-            setCelebratingEvent(variables.eventType);
+            setCelebratingEvent(data.rsvpStatusFirst ? "first" : "second");
             setTimeout(() => {
                 setCelebratingEvent(null);
             }, 2000);
@@ -118,9 +150,20 @@ export default function GuestDetails({
         }
     };
 
+    const handleUpdateGuestData = (field: string, value: string) => {
+        if (guest) {
+            dataMutation.mutate({
+                token: guest.invitationCode,
+                data: {
+                    [field]: value,
+                },
+            });
+        }
+    };
+
     if (isLoading) {
         return (
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-2xl mx-auto">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-80 h-[80dvh] sm:w-full sm:max-w-4xl mx-auto">
                 <div className="border-b border-gray-100 pb-4 sm:pb-6 mb-6 sm:mb-8">
                     <div className="flex items-center gap-3 sm:gap-4">
                         <Skeleton className="w-12 h-12 sm:w-16 sm:h-16 rounded-full" />
@@ -170,34 +213,169 @@ export default function GuestDetails({
     if (!guest) return null;
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-2xl mx-auto">
+        <motion.div
+            className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-4xl mx-auto"
+            animate={
+                celebratingDataUpdate === "data"
+                    ? {
+                          scale: [1, 1.02, 1],
+                          backgroundColor: [
+                              "rgb(255 255 255)",
+                              "rgb(240 253 244)",
+                              "rgb(255 255 255)",
+                          ],
+                      }
+                    : {}
+            }
+            transition={{ duration: 0.8 }}
+        >
+            <AnimatePresence>
+                {celebratingDataUpdate === "data" && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0 }}
+                        className="absolute top-4 right-4 pointer-events-none flex items-center justify-center z-50"
+                    >
+                        <motion.div
+                            animate={{
+                                rotate: [0, 10, -10, 0],
+                                scale: [1, 1.2, 1],
+                            }}
+                            transition={{ duration: 0.6, repeat: 1 }}
+                            className="text-4xl"
+                        >
+                            ✅
+                        </motion.div>
+                        {[...Array(6)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{
+                                    x: 0,
+                                    y: 0,
+                                    opacity: 1,
+                                    scale: 1,
+                                }}
+                                animate={{
+                                    x: Math.cos((i * 60 * Math.PI) / 180) * 60,
+                                    y: Math.sin((i * 60 * Math.PI) / 180) * 60,
+                                    opacity: 0,
+                                    scale: 0.5,
+                                }}
+                                transition={{
+                                    duration: 1,
+                                    delay: 0.3,
+                                }}
+                                className="absolute text-lg"
+                            >
+                                ✨
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="border-b border-gray-100 pb-4 sm:pb-6 mb-6 sm:mb-8">
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 pt-14 sm:pt-0">
                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center text-white text-lg sm:text-xl font-bold">
                         {guest.name.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex-1 min-w-0">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 truncate">
-                            {guest.name}
-                        </h2>
-                    </div>
+                    <span className="relative sm:flex-1">
+                        <Input
+                            className={cn(
+                                "flex-1 w-80 sm:w-96 h-16 !text-lg font-bold text-gray-900 truncate border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                                {
+                                    "pr-20":
+                                        name !== guest?.name &&
+                                        name &&
+                                        name !== "",
+                                },
+                            )}
+                            onChange={(e) => setName(e.target.value)}
+                            defaultValue={guest?.name}
+                            placeholder="Seu nome completo..."
+                            value={name!}
+                            ref={nameInputRef}
+                        />
+
+                        <AnimatePresence>
+                            {name !== guest?.name && name && name !== "" ? (
+                                <Animated
+                                    from="right"
+                                    to="right"
+                                    className="z-10 !absolute !right-0 !top-1/2 !-translate-y-1/2"
+                                >
+                                    <Button
+                                        size="sm"
+                                        onClick={() =>
+                                            handleUpdateGuestData("name", name)
+                                        }
+                                        disabled={dataMutation.isPending}
+                                    >
+                                        {dataMutation.isPending ? (
+                                            <Loader2 className="animate-spin h-3 w-3" />
+                                        ) : (
+                                            "Salvar"
+                                        )}
+                                    </Button>
+                                </Animated>
+                            ) : (
+                                <Animated
+                                    from="right"
+                                    to="right"
+                                    className="absolute !right-3 !top-1/2 !-translate-y-1/2"
+                                    onClick={() => {
+                                        nameInputRef?.current?.focus();
+                                    }}
+                                >
+                                    <Pencil className="w-5 h-5 text-orange-500" />
+                                </Animated>
+                            )}
+                        </AnimatePresence>
+                    </span>
                 </div>
             </div>
 
-            <div className="border-b border-gray-100 flex flex-col gap-2 pb-6 mb-6">
+            <motion.div
+                className="border-b border-gray-100 flex flex-col gap-2 pb-6 mb-6"
+                animate={
+                    celebratingDataUpdate === "data"
+                        ? {
+                              scale: [1, 1.01, 1],
+                          }
+                        : {}
+                }
+                transition={{ duration: 0.5, delay: 0.1 }}
+            >
                 <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                     Seus dados
                 </h3>
                 <span className="relative text-primary hover:text-blue-800 transition-colors text-xs sm:text-sm truncate">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0" />
-                    <Input defaultValue={guest.email} className="pl-8 pb-2.5" />
-                    <Button
-                        size="sm"
-                        className="absolute right-0.5 top-1/2 -translate-y-1/2"
-                    >
-                        Salvar
-                    </Button>
+                    <Input
+                        onChange={(e) => setEmail(e.target.value)}
+                        defaultValue={guest?.email}
+                        placeholder="Seu melhor e-mail..."
+                        value={email!}
+                        className="pl-8 pb-2.5"
+                    />
+                    {email !== guest?.email && email && email !== "" && (
+                        <Button
+                            size="sm"
+                            className="z-10 absolute right-0.5 top-1/2 transform -translate-y-1/2"
+                            onClick={() =>
+                                handleUpdateGuestData("email", email)
+                            }
+                            disabled={dataMutation.isPending}
+                        >
+                            {dataMutation.isPending ? (
+                                <Loader2 className="animate-spin h-3 w-3" />
+                            ) : (
+                                "Salvar"
+                            )}
+                        </Button>
+                    )}
                 </span>
                 <span className="relative text-primary hover:text-blue-800 transition-colors text-xs sm:text-sm truncate">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0" />
@@ -205,20 +383,33 @@ export default function GuestDetails({
                         showMask
                         mask="+55 (__) _ ____-____"
                         replacement={{ _: /\d/ }}
-                        defaultValue={guest.phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        defaultValue={guest?.phone}
+                        placeholder="Seu melhor número..."
+                        value={phone!}
                         className={cn(
                             "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                             "pl-8 pb-2.5",
                         )}
                     />
-                    <Button
-                        size="sm"
-                        className="absolute right-0.5 top-1/2 -translate-y-1/2"
-                    >
-                        Salvar
-                    </Button>
+                    {phone !== guest?.phone && phone && phone !== "" && (
+                        <Button
+                            size="sm"
+                            className="z-10 absolute right-0.5 top-1/2 transform -translate-y-1/2"
+                            onClick={() =>
+                                handleUpdateGuestData("phone", phone)
+                            }
+                            disabled={dataMutation.isPending}
+                        >
+                            {dataMutation.isPending ? (
+                                <Loader2 className="animate-spin h-3 w-3" />
+                            ) : (
+                                "Salvar"
+                            )}
+                        </Button>
+                    )}
                 </span>
-            </div>
+            </motion.div>
 
             <div className="mb-6 sm:mb-8">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
@@ -308,7 +499,7 @@ export default function GuestDetails({
                                 Primeiro Evento
                             </span>
                             <motion.span
-                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusFirst)}`}
+                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusFirst!)}`}
                                 animate={
                                     guest.rsvpStatusFirst ===
                                         GuestEventStatus.CONFIRMED &&
@@ -333,9 +524,9 @@ export default function GuestDetails({
                                     }
                                     transition={{ duration: 0.5, delay: 0.3 }}
                                 >
-                                    {getStatusIcon(guest.rsvpStatusFirst)}
+                                    {getStatusIcon(guest.rsvpStatusFirst!)}
                                 </motion.span>
-                                {getEventStatusLabel(guest.rsvpStatusFirst)}
+                                {getEventStatusLabel(guest.rsvpStatusFirst!)}
                             </motion.span>
                         </div>
                         {guest.rsvpStatusFirst === GuestEventStatus.PENDING && (
@@ -351,8 +542,7 @@ export default function GuestDetails({
                                 size="default"
                             >
                                 {rsvpMutation.isPending &&
-                                rsvpMutation.variables?.eventType ===
-                                    "first" ? (
+                                rsvpMutation.variables.eventType === "first" ? (
                                     <motion.span
                                         className="flex items-center gap-2"
                                         initial={{ opacity: 0 }}
@@ -446,7 +636,7 @@ export default function GuestDetails({
                                 Segundo Evento
                             </span>
                             <motion.span
-                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusSecond)}`}
+                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusSecond!)}`}
                                 animate={
                                     guest.rsvpStatusSecond ===
                                         GuestEventStatus.CONFIRMED &&
@@ -471,9 +661,9 @@ export default function GuestDetails({
                                     }
                                     transition={{ duration: 0.5, delay: 0.3 }}
                                 >
-                                    {getStatusIcon(guest.rsvpStatusSecond)}
+                                    {getStatusIcon(guest.rsvpStatusSecond!)}
                                 </motion.span>
-                                {getEventStatusLabel(guest.rsvpStatusSecond)}
+                                {getEventStatusLabel(guest.rsvpStatusSecond!)}
                             </motion.span>
                         </div>
                         {guest.rsvpStatusSecond ===
@@ -491,7 +681,7 @@ export default function GuestDetails({
                                 size="default"
                             >
                                 {rsvpMutation.isPending &&
-                                rsvpMutation.variables?.eventType ===
+                                rsvpMutation.variables.eventType ===
                                     "second" ? (
                                     <motion.span
                                         className="flex items-center gap-2"
@@ -523,6 +713,6 @@ export default function GuestDetails({
                     </motion.div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

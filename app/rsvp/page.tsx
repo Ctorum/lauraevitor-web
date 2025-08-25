@@ -7,6 +7,7 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { REGEXP_ONLY_CHARS } from "input-otp";
 
 import { useQuery } from "@tanstack/react-query";
 import GuestDetails from "@/components/guest-details";
@@ -85,7 +86,12 @@ export default function Token() {
         return (
             <Animated from="bottom" to="top">
                 <section className="flex-[65%] w-full flex justify-center">
-                    <InputOTP maxLength={6} onComplete={handleTokenComplete}>
+                    <InputOTP
+                        type="url"
+                        pattern={REGEXP_ONLY_CHARS}
+                        maxLength={6}
+                        onComplete={handleTokenComplete}
+                    >
                         <InputOTPGroup>
                             <InputOTPSlot
                                 index={0}
