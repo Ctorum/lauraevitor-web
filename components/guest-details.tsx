@@ -214,7 +214,7 @@ export default function GuestDetails({
 
     return (
         <motion.div
-            className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-4xl mx-auto"
+            className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-4xl mx-auto dark:bg-[#1B2A49]"
             animate={
                 celebratingDataUpdate === "data"
                     ? {
@@ -283,7 +283,7 @@ export default function GuestDetails({
                     <span className="relative sm:flex-1">
                         <Input
                             className={cn(
-                                "flex-1 w-80 sm:w-96 h-16 !text-lg font-bold text-gray-900 truncate border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                                "dark:bg-[transparent] dark:text-gray-300 flex-1 w-80 sm:w-96 h-16 !text-lg font-bold text-gray-900 truncate border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
                                 {
                                     "pr-20":
                                         name !== guest?.name &&
@@ -347,18 +347,18 @@ export default function GuestDetails({
                 }
                 transition={{ duration: 0.5, delay: 0.1 }}
             >
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2 dark:text-gray-300">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 dark:text-gray-300" />
                     Seus dados
                 </h3>
                 <span className="relative text-primary hover:text-blue-800 transition-colors text-xs sm:text-sm truncate">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0 dark:text-gray-300" />
                     <Input
                         onChange={(e) => setEmail(e.target.value)}
                         defaultValue={guest?.email}
                         placeholder="Seu melhor e-mail..."
                         value={email!}
-                        className="pl-8 pb-2.5"
+                        className="pl-8 pb-2.5 dark:text-gray-300"
                     />
                     {email !== guest?.email && email && email !== "" && (
                         <Button
@@ -378,7 +378,7 @@ export default function GuestDetails({
                     )}
                 </span>
                 <span className="relative text-primary hover:text-blue-800 transition-colors text-xs sm:text-sm truncate">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex-shrink-0 dark:text-gray-300" />
                     <InputMask
                         showMask
                         mask="+55 (__) _ ____-____"
@@ -388,7 +388,7 @@ export default function GuestDetails({
                         placeholder="Seu melhor número..."
                         value={phone!}
                         className={cn(
-                            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                            "dark:text-gray-300 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                             "pl-8 pb-2.5",
                         )}
                     />
@@ -412,16 +412,16 @@ export default function GuestDetails({
             </motion.div>
 
             <div className="mb-6 sm:mb-8">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-                    <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2 dark:text-gray-300">
+                    <Ticket className="w-4 h-4 sm:w-5 sm:h-5 dark:text-gray-300" />
                     Detalhes do Convite
                 </h3>
-                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <div className="bg-gray-50 dark:bg-background rounded-lg p-3 sm:p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                        <span className="text-xs sm:text-sm font-medium text-gray-600">
+                        <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
                             Código de Convite:
                         </span>
-                        <code className="bg-white px-2 sm:px-3 py-1 rounded font-mono text-xs sm:text-sm text-gray-800 border self-start sm:self-auto">
+                        <code className="bg-white dark:bg-background px-2 sm:px-3 py-1 rounded font-mono text-xs sm:text-sm text-gray-800 dark:text-gray-300 border self-start sm:self-auto">
                             {guest.invitationCode}
                         </code>
                     </div>
@@ -429,13 +429,13 @@ export default function GuestDetails({
             </div>
 
             <div>
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2 dark:text-gray-300">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 dark:text-gray-300" />
                     Eventos
                 </h3>
                 <div className="grid gap-3 sm:gap-4">
                     <motion.div
-                        className="bg-gray-50 rounded-lg p-3 sm:p-4 hover:bg-gray-100 transition-colors relative overflow-hidden"
+                        className="dark:bg-background bg-gray-50 rounded-lg p-3 sm:p-4 hover:bg-gray-100 transition-colors relative overflow-hidden"
                         animate={
                             celebratingEvent === "first"
                                 ? {
@@ -495,7 +495,7 @@ export default function GuestDetails({
                             )}
                         </AnimatePresence>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-3 relative z-10">
-                            <span className="font-medium text-gray-700 text-sm sm:text-base">
+                            <span className="font-medium text-gray-700 text-sm sm:text-base dark:text-gray-300">
                                 Primeiro Evento
                             </span>
                             <motion.span
@@ -550,20 +550,20 @@ export default function GuestDetails({
                                         transition={{ duration: 0.3 }}
                                     >
                                         <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
-                                        <span className="hidden sm:inline">
+                                        <span className="hidden sm:inline dark:text-gray-300">
                                             Confirmando...
                                         </span>
-                                        <span className="sm:hidden">
+                                        <span className="sm:hidden dark:text-gray-300">
                                             Confirmando...
                                         </span>
                                     </motion.span>
                                 ) : (
                                     <>
-                                        <span className="hidden sm:inline">
+                                        <span className="hidden sm:inline dark:text-gray-300">
                                             Confirmar presença para o Primeiro
                                             Evento
                                         </span>
-                                        <span className="sm:hidden">
+                                        <span className="sm:hidden dark:text-gray-300">
                                             Confirmar Primeiro Evento
                                         </span>
                                     </>
@@ -572,7 +572,7 @@ export default function GuestDetails({
                         )}
                     </motion.div>
                     <motion.div
-                        className="bg-gray-50 rounded-lg p-3 sm:p-4 hover:bg-gray-100 transition-colors relative overflow-hidden"
+                        className="dark:bg-background bg-gray-50 rounded-lg p-3 sm:p-4 hover:bg-gray-100 transition-colors relative overflow-hidden"
                         animate={
                             celebratingEvent === "second"
                                 ? {
@@ -632,11 +632,11 @@ export default function GuestDetails({
                             )}
                         </AnimatePresence>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-3 relative z-10">
-                            <span className="font-medium text-gray-700 text-sm sm:text-base">
+                            <span className="font-medium text-gray-700 text-sm sm:text-base dark:text-gray-300">
                                 Segundo Evento
                             </span>
                             <motion.span
-                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusSecond!)}`}
+                                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 self-start sm:self-auto ${getStatusBadgeColor(guest.rsvpStatusSecond!)} dark:text-gray-300`}
                                 animate={
                                     guest.rsvpStatusSecond ===
                                         GuestEventStatus.CONFIRMED &&
@@ -690,20 +690,20 @@ export default function GuestDetails({
                                         transition={{ duration: 0.3 }}
                                     >
                                         <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
-                                        <span className="hidden sm:inline">
+                                        <span className="hidden sm:inline dark:text-gray-300">
                                             Confirmando...
                                         </span>
-                                        <span className="sm:hidden">
+                                        <span className="sm:hidden dark:text-gray-300">
                                             Confirmando...
                                         </span>
                                     </motion.span>
                                 ) : (
                                     <>
-                                        <span className="hidden sm:inline">
+                                        <span className="hidden sm:inline dark:text-gray-300">
                                             Confirmar presença para o Segundo
                                             Evento
                                         </span>
-                                        <span className="sm:hidden">
+                                        <span className="sm:hidden dark:text-gray-300">
                                             Confirmar Segundo Evento
                                         </span>
                                     </>
