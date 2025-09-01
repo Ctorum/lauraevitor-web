@@ -3,7 +3,7 @@ import { History } from "../components/history";
 import { SectionGallery } from "../components/pictures-gallery";
 import Image from "next/image";
 import plant from "../public/plant.svg";
-import l78 from "../public/images/L_78.jpg";
+import l78 from "../public/images/L_78.png";
 import logo from "../public/logo.png";
 import vlimg from "../public/images/vl-img0.svg";
 import plantCircle from "../public/images/plant.svg";
@@ -12,9 +12,6 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-background dark:bg-gray-900 flex flex-col items-center justify-center">
       <section className="h-screen w-full bg-[#D9D9D9] dark:bg-gray-900 justify-center items-center">
-        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl font-bold text-center">
-          Laura e Vitor
-        </h1>
         <Image
           src={l78}
           alt="Laura e Vitor"
