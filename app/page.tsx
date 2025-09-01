@@ -3,7 +3,7 @@ import { History } from "../components/history";
 import { SectionGallery } from "../components/pictures-gallery";
 import Image from "next/image";
 import plant from "../public/plant.svg";
-import l78 from "../public/images/L_78.jpg";
+import l78 from "../public/images/L_78.png";
 import logo from "../public/logo.png";
 import vlimg from "../public/images/vl-img0.svg";
 import plantCircle from "../public/images/plant.svg";
