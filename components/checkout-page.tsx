@@ -1,159 +1,148 @@
 "use client";
 
-import { useState } from "react";
-import PlantLine from "@/components/plant-line";
+import { useState, useEffect } from "react";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-
-import { useQuery } from "@tanstack/react-query";
-import GuestDetails from "@/components/guest-details";
-import Animated from "@/components/animated";
-import { AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import api from "@/services/api.service";
+  ArrowLeft,
+  CreditCard,
+  Building,
+  Smartphone,
+  Plus,
+  Minus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { CartItem } from "@/lib/types";
 
-async function getGuestData(token: string) {
-  const response = await api.get(`/guests/me?invitation_code=${token}`);
-  return response.data;
+interface OtherPaymentPageProps {
+  cart: CartItem[];
+  totalPrice: number;
+  onBack: () => void;
+  onUpdateCart: (itemId: string, newQuantity: number) => any;
+  onRemoveFromCart: (itemId: string) => any;
+  onClose: () => void;
 }
 
-export default function Token() {
-  const isMobile = useIsMobile();
+export default function OtherPaymentPage({
+  cart,
+  totalPrice,
+  onBack,
+}: OtherPaymentPageProps) {
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
 
-  const [token, setToken] = useState<string>("");
-
-  const {
-    data: guestData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["guest", token],
-    queryFn: () => getGuestData(token),
-    enabled: token.length === 6,
-    retry: false,
-  });
-
-  const handleTokenComplete = (value: string) => {
-    setToken(value);
+  const formatBRL = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
   };
 
-  const getHeaderText = () => {
-    if (error) return "Token inválido";
-    if (!guestData) return "Deposite aqui o seu token";
-    return "Seu perfil";
-  };
+  const createPurchase = async () => {
+    setIsProcessing(true);
 
-  const renderContent = () => {
-    if (error) {
-      return (
-        <Animated from="top" to="bottom">
-          <section className="w-full h-full flex flex-col items-center justify-center gap-4 px-4">
-            <div className="text-red-500 text-lg sm:text-xl font-semibold text-center">
-              Token inválido ou não encontrado
-            </div>
-            <p className="text-gray-600 text-center text-sm sm:text-base">
-              Por favor, verifique o token e tente novamente.
-            </p>
-            <Button
-              onClick={() => {
-                setToken("");
-                window.location.reload();
-              }}
-            >
-              Tentar novamente
-            </Button>
-          </section>
-        </Animated>
+    const purchaseData = {
+      items: cart.map((item) => ({
+        id: item.id.toString(),
+        title: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+      })),
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/purchases`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(purchaseData),
+        },
       );
-    }
 
-    if (isLoading || guestData) {
-      return (
-        <Animated from="top" to="bottom">
-          <section className="w-full h-full flex items-center justify-center px-4">
-            <GuestDetails isLoading={isLoading} guest={guestData} />
-          </section>
-        </Animated>
-      );
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    return (
-      <Animated from="bottom" to="top">
-        <section className="flex-[65%] w-full flex justify-center">
-          <InputOTP
-            type="url"
-            pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-            maxLength={6}
-            onComplete={handleTokenComplete}
-          >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} className="w-12 h-20 sm:w-24 sm:h-24" />
-              <InputOTPSlot index={1} className="w-12 h-20 sm:w-24 sm:h-24" />
-              <InputOTPSlot index={2} className="w-12 h-20 sm:w-24 sm:h-24" />
-            </InputOTPGroup>
-            <span className="w-8 sm:w-12 h-1.5 mx-2 sm:mx-4 bg-primary rounded-full" />
-            <InputOTPGroup>
-              <InputOTPSlot index={3} className="w-12 h-20 sm:w-24 sm:h-24" />
-              <InputOTPSlot index={4} className="w-12 h-20 sm:w-24 sm:h-24" />
-              <InputOTPSlot index={5} className="w-12 h-20 sm:w-24 sm:h-24" />
-            </InputOTPGroup>
-          </InputOTP>
-        </section>
-      </Animated>
-    );
+      const result = await response.json();
+      console.log("Purchase created:", result);
+
+      if (result?.data?.id) {
+        console.log(result.data.id);
+        setPreferenceId(result.data.id);
+      }
+    } catch (error) {
+      console.error("Error creating purchase:", error);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsProcessing(false);
+    }
   };
+
+  useEffect(() => {
+    createPurchase();
+    initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY as string);
+  }, []);
 
   return (
-    <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center gap-8 sm:gap-16">
-      <Animated
-        layout
-        className={cn(
-          "w-full absolute flex items-center justify-center px-4 z-[999]",
-          {
-            "top-32 sm:top-64": !guestData && !error,
-            "top-6 sm:top-28": guestData || isLoading || error,
-          },
-        )}
-      >
-        {(!isMobile || (!guestData && !error)) && (
-          <PlantLine
-            amount={isMobile ? 5 : 2}
-            className="w-full sm:w-1/3 absolute left-0 top-1/2 -translate-y-1/2"
-          />
-        )}
-        <h1
-          className={cn(
-            "text-2xl mt-36 sm:mt-0 sm:text-3xl lg:text-4xl font-bold italic text-center",
-            "text-[2rem] text-center font-bold italic dark:text-[#fff] text-[#355A72] absolute z-10 sm:bg-gradient-to-r from-[transparent] via-[#fff] to-[#fff]/100 dark:bg-gradient-to-r dark:from-[#111827]/80 dark:via-[#111827] dark:to-[#111827]/100 bg-clip-padding p-1",
-            error ? "text-red-500" : "text-third",
-          )}
-        >
-          {getHeaderText()}
-        </h1>
-      </Animated>
-
-      <div className="flex-1 w-full flex items-center justify-center mt-16 sm:mt-0">
-        <AnimatePresence mode="popLayout">{renderContent()}</AnimatePresence>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="sm" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">Outras Formas de Pagamento</h1>
+          <p className="text-muted-foreground">
+            Escolha sua forma de pagamento preferida
+          </p>
+        </div>
       </div>
 
-      <span className="absolute left-0 bottom-0 w-full h-64 sm:h-80 lg:h-96 flex items-end justify-between z-[-1]">
-        <img
-          src="/images/plant.png"
-          alt="plant-1"
-          className="w-44 sm:w-80 h-auto scale-x-[-1] opacity-80 sm:opacity-100"
-        />
-        <img
-          src="/images/plant.png"
-          alt="plant-2"
-          className="w-44 sm:w-80 h-auto opacity-80 sm:opacity-100"
-        />
-      </span>
+      {/* Total Amount */}
+      <div className="text-center py-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
+        <p className="text-sm text-muted-foreground mb-1">Total a Pagar</p>
+        <p className="text-3xl font-bold text-blue-600">
+          {formatBRL(totalPrice)}
+        </p>
+        <Badge variant="secondary" className="bg-blue-100 text-blue-800 mt-2">
+          {cart.reduce((total, item) => total + item.quantity, 0)} itens
+        </Badge>
+      </div>
+
+      <div className="space-y-3">
+        <h3 className="font-semibold text-lg">
+          Métodos de Pagamento Disponíveis
+        </h3>
+        {preferenceId && (
+          <Wallet
+            initialization={{
+              preferenceId: preferenceId,
+            }}
+          />
+        )}
+      </div>
+
+      {selectedMethod && (
+        <Card className="bg-gray-50 border-gray-200">
+          <CardContent className="p-4 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Smartphone className="w-8 h-8 text-gray-600" />
+            </div>
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              Você será redirecionado para completar o pagamento
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Após o redirecionamento, siga as instruções na página de pagamento
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

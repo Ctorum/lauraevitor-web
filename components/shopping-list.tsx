@@ -141,6 +141,9 @@ export default function ShoppingListCart() {
                   ),
                 );
               }}
+              onBack={() => {
+                setIsCheckoutOpen(false);
+              }}
               onRemoveFromCart={(itemId: string) => {
                 setCart((prevCart) =>
                   prevCart.filter((item) => item.id !== itemId),

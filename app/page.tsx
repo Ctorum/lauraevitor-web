@@ -11,8 +11,15 @@ import plantCircle from "../public/images/plant.svg";
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-background dark:bg-gray-900 flex flex-col items-center justify-center">
-      <section className="h-screen w-full bg-[#D9D9D9] dark:bg-gray-900">
-        <Image src={l78} alt="L78 Image" className="w-[100%] h-[100%]" />
+      <section className="h-screen w-full bg-[#D9D9D9] dark:bg-gray-900 justify-center items-center">
+        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl font-bold text-center">
+          Laura e Vitor
+        </h1>
+        <Image
+          src={l78}
+          alt="Laura e Vitor"
+          className="w-[100%] h-[100%] object-cover bg-[#d7c4a9]"
+        />
       </section>
       <section className="relative h-[40rem] md:h-[80rem] w-full py-16 bg-white dark:bg-gray-900 flex flex-col items-center justify-center">
         <Image
@@ -35,7 +42,6 @@ export default function Home() {
         />
       </section>
       <History />
-      <SectionGallery />
       <section className="md:h-[75rem] h-screen w-full flex flex-col md:flex-row items-center justify-center md:justify-around mb-[5rem]">
         <div className="items-center hidden md:flex w-full h-full">
           <div className="flex w-[45rem] h-[65%] xl:w-[55rem] xl:h-[75%] 2xl:w-[75rem] 2xl:h-full relative right-[10%] z-[2] before:absolute before:rounded-[100%] before:bg-[#5D94E4] before:bottom-[8%] before:right-[25%] before:w-[100%] before:h-[90%] before:z-[-1]">
