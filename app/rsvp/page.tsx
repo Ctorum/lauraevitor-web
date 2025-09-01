@@ -76,7 +76,7 @@ export default function Token() {
     if (isLoading || guestData) {
       return (
         <Animated from="top" to="bottom">
-          <section className="w-full h-full flex items-center justify-center px-4">
+          <section className="w-full h-full flex items-center justify-center px-4 py-6">
             <GuestDetails isLoading={isLoading} guest={guestData} />
           </section>
         </Animated>
@@ -85,7 +85,7 @@ export default function Token() {
 
     return (
       <Animated from="bottom" to="top">
-        <section className="flex-[65%] w-full flex justify-center">
+        <section className="flex-[65%] w-full flex justify-center mt-[20%]">
           <InputOTP
             type="url"
             pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
@@ -110,11 +110,11 @@ export default function Token() {
   };
 
   return (
-    <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center gap-8 sm:gap-16">
+    <div className="overflow-hidden w-full min-h-screen px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center gap-8 sm:gap-16">
       <Animated
         layout
         className={cn(
-          "w-full absolute flex items-center justify-center px-4 z-[999]",
+          "w-full absolute flex flex-col md:flex-row items-center justify-center px-4 z-10 mb-5",
           {
             "top-32 sm:top-64": !guestData && !error,
             "top-6 sm:top-28": guestData || isLoading || error,
@@ -124,13 +124,13 @@ export default function Token() {
         {(!isMobile || (!guestData && !error)) && (
           <PlantLine
             amount={isMobile ? 5 : 2}
-            className="w-full sm:w-1/3 absolute left-0 top-1/2 -translate-y-1/2"
+            className="w-full sm:w-1/3 relative md:absolute left-0 top-1/2 -translate-y-1/2"
           />
         )}
         <h1
           className={cn(
-            "text-2xl mt-36 sm:mt-0 sm:text-3xl lg:text-4xl font-bold italic text-center",
-            "text-[2rem] text-center font-bold italic dark:text-[#fff] text-[#355A72] absolute z-10 sm:bg-gradient-to-r from-[transparent] via-[#fff] to-[#fff]/100 dark:bg-gradient-to-r dark:from-[#111827]/80 dark:via-[#111827] dark:to-[#111827]/100 bg-clip-padding p-1",
+            "text-2xl sm:mt-0 sm:text-3xl lg:text-4xl font-bold italic text-center top-[-3rem] md:top-[-1.5rem]",
+            `text-[2rem] text-center font-bold italic dark:text-[#fff] text-[#355A72] relative md:absolute z-10 sm:bg-gradient-to-r from-[transparent] via-[#fff] to-[#fff]/100 dark:bg-gradient-to-r dark:from-[#111827]/80 dark:via-[#111827] dark:to-[#111827]/100 bg-clip-padding p-1 ${getHeaderText() === "Seu perfil" ? "top-[5rem]" : ""}`,
             error ? "text-red-500" : "text-third",
           )}
         >
@@ -138,11 +138,11 @@ export default function Token() {
         </h1>
       </Animated>
 
-      <div className="flex-1 w-full flex items-center justify-center mt-16 sm:mt-0">
+      <div className="flex-1 w-full flex items-center justify-center mt-[10rem] sm:mt-[10rem]">
         <AnimatePresence mode="popLayout">{renderContent()}</AnimatePresence>
       </div>
 
-      <span className="absolute left-0 bottom-0 w-full h-64 sm:h-80 lg:h-96 flex items-end justify-between z-[-1]">
+      <span className="absolute left-0 bottom-[-100%] w-full flex items-end justify-between z-[-1]">
         <img
           src="/images/plant.png"
           alt="plant-1"
