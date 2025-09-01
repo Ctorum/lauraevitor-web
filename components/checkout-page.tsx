@@ -1,45 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  CreditCard,
-  Smartphone,
-  Check,
   ArrowLeft,
+  CreditCard,
+  Building,
+  Smartphone,
   Plus,
   Minus,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import PixPaymentPage from "@/components/pix-payment-page";
-import OtherPaymentPage from "@/components/other-payment-page";
-
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { CartItem } from "@/lib/types";
 
-interface CheckoutPageProps {
+interface OtherPaymentPageProps {
   cart: CartItem[];
   totalPrice: number;
+  onBack: () => void;
+  onUpdateCart: (itemId: string, newQuantity: number) => any;
+  onRemoveFromCart: (itemId: string) => any;
   onClose: () => void;
-  onUpdateCart: (itemId: string, newQuantity: number) => void;
-  onRemoveFromCart: (itemId: string) => void;
 }
 
-export default function CheckoutPage({
+export default function OtherPaymentPage({
   cart,
   totalPrice,
-  onClose,
-  onUpdateCart,
-  onRemoveFromCart,
-}: CheckoutPageProps) {
-  const [selectedPayment, setSelectedPayment] = useState<
-    "pix" | "other" | null
-  >(null);
-  const [currentPage, setCurrentPage] = useState<
-    "checkout" | "pix" | "other" | "success"
-  >("checkout");
+  onBack,
+}: OtherPaymentPageProps) {
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
 
   const formatBRL = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -48,244 +41,108 @@ export default function CheckoutPage({
     }).format(value);
   };
 
-  const handlePaymentConfirm = () => {
-    if (selectedPayment === "pix") {
-      setCurrentPage("pix");
-    } else if (selectedPayment === "other") {
-      setCurrentPage("other");
+  const createPurchase = async () => {
+    setIsProcessing(true);
+
+    const purchaseData = {
+      items: cart.map((item) => ({
+        id: item.id.toString(),
+        title: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+      })),
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/purchases`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(purchaseData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Purchase created:", result);
+
+      if (result?.data?.id) {
+        console.log(result.data.id);
+        setPreferenceId(result.data.id);
+      }
+    } catch (error) {
+      console.error("Error creating purchase:", error);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handlePaymentComplete = () => {
-    setCurrentPage("success");
-  };
+  useEffect(() => {
+    createPurchase();
+    initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY as string);
+  }, []);
 
-  const handleBackToCheckout = () => {
-    setCurrentPage("checkout");
-    setSelectedPayment(null);
-  };
-
-  // Success Page
-  if (currentPage === "success") {
-    return (
-      <div className="flex flex-col items-center justify-center p-6 text-center">
-        <div className="bg-green-100 rounded-full p-4 mb-4">
-          <Check className="w-8 h-8 text-green-600" />
-        </div>
-        <DialogHeader className="mb-4">
-          <DialogTitle className="text-2xl text-green-600">
-            Pagamento Aprovado!
-          </DialogTitle>
-        </DialogHeader>
-        <p className="text-muted-foreground mb-6">
-          Seu pedido foi processado com sucesso. Você receberá uma confirmação
-          por email.
-        </p>
-        <Button onClick={onClose} className="w-full">
-          Continuar Comprando
-        </Button>
-      </div>
-    );
-  }
-
-  // PIX Payment Page
-  if (currentPage === "pix") {
-    return (
-      <PixPaymentPage
-        totalPrice={totalPrice}
-        onBack={handleBackToCheckout}
-        onPaymentComplete={handlePaymentComplete}
-        cart={cart}
-        onUpdateCart={onUpdateCart}
-        onRemoveFromCart={onRemoveFromCart}
-      />
-    );
-  }
-
-  // Other Payment Page
-  if (currentPage === "other") {
-    return (
-      <OtherPaymentPage
-        totalPrice={totalPrice}
-        onBack={handleBackToCheckout}
-        onPaymentComplete={handlePaymentComplete}
-        cart={cart}
-        onUpdateCart={onUpdateCart}
-        onRemoveFromCart={onRemoveFromCart}
-      />
-    );
-  }
-
-  // Main Checkout Page
   return (
     <div className="space-y-6">
-      <DialogHeader>
-        <DialogTitle className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="p-0 h-auto"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          Finalizar Compra
-        </DialogTitle>
-      </DialogHeader>
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="sm" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">Outras Formas de Pagamento</h1>
+          <p className="text-muted-foreground">
+            Escolha sua forma de pagamento preferida
+          </p>
+        </div>
+      </div>
 
-      {/* Total Amount - Big and Highlighted */}
-      <div className="text-center py-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
-        <p className="text-sm text-muted-foreground mb-2">Total a Pagar</p>
-        <p className="text-4xl font-bold text-blue-600 mb-2">
+      {/* Total Amount */}
+      <div className="text-center py-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
+        <p className="text-sm text-muted-foreground mb-1">Total a Pagar</p>
+        <p className="text-3xl font-bold text-blue-600">
           {formatBRL(totalPrice)}
         </p>
-        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+        <Badge variant="secondary" className="bg-blue-100 text-blue-800 mt-2">
           {cart.reduce((total, item) => total + item.quantity, 0)} itens
         </Badge>
       </div>
 
-      {/* Cart Summary for Review */}
-      <Card className="border-secondary">
-        <CardHeader>
-          <CardTitle className="text-xl">Itens no Carrinho</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {cart.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3 py-2 border-b last:border-b-0"
-            >
-              <div className="flex-1">
-                <div className="font-medium text-sm">{item.name}</div>
-                <div className="text-xs text-muted-foreground">
-                  {formatBRL(item.price)} cada
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 bg-transparent"
-                  onClick={() => {
-                    if (item.quantity > 1) {
-                      onUpdateCart(item.id, item.quantity - 1);
-                    } else {
-                      onRemoveFromCart(item.id);
-                    }
-                  }}
-                >
-                  {item.quantity > 1 ? (
-                    <Minus className="h-3 w-3" />
-                  ) : (
-                    <Trash2 className="h-3 w-3" />
-                  )}
-                </Button>
-                <span className="text-sm font-medium w-8 text-center">
-                  {item.quantity}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 bg-transparent"
-                  onClick={() => onUpdateCart(item.id, item.quantity + 1)}
-                >
-                  <Plus className="h-3 w-3" />
-                </Button>
-              </div>
-              <div className="text-sm font-medium w-20 text-right">
-                {formatBRL(item.price * item.quantity)}
-              </div>
+      <div className="space-y-3">
+        <h3 className="font-semibold text-lg">
+          Métodos de Pagamento Disponíveis
+        </h3>
+        {preferenceId && (
+          <Wallet
+            initialization={{
+              preferenceId: preferenceId,
+            }}
+          />
+        )}
+      </div>
+
+      {selectedMethod && (
+        <Card className="bg-gray-50 border-gray-200">
+          <CardContent className="p-4 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Smartphone className="w-8 h-8 text-gray-600" />
             </div>
-          ))}
-          {cart.length === 0 && (
-            <div className="text-center py-4 text-muted-foreground">
-              Seu carrinho está vazio
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Payment Options */}
-      <Card className="border-secondary">
-        <CardHeader>
-          <CardTitle className="text-xl">Opções de Pagamento</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* PIX Option */}
-          <Card
-            className={`cursor-pointer transition-all hover:shadow-md border-secondary ${
-              selectedPayment === "pix" ? "ring-2 ring-blue-500 bg-blue-50" : ""
-            }`}
-            onClick={() => setSelectedPayment("pix")}
-          >
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="bg-blue-100 p-2 rounded-md">
-                <Smartphone className="w-5 h-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-blue-700">PIX</h4>
-                <p className="text-sm text-muted-foreground">
-                  Pagamento instantâneo
-                </p>
-              </div>
-              <div className="text-right">
-                <Badge className="bg-green-100 text-green-800">
-                  Sem taxa pros noivos
-                </Badge>
-                <p className="text-lg font-bold text-green-600 mt-1">
-                  {formatBRL(totalPrice)}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Any Other Option */}
-          <Card
-            className={`cursor-pointer transition-all hover:shadow-md border-secondary ${
-              selectedPayment === "other"
-                ? "ring-2 ring-purple-500 bg-purple-50"
-                : ""
-            }`}
-            onClick={() => setSelectedPayment("other")}
-          >
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="bg-purple-100 p-2 rounded-md">
-                <CreditCard className="w-5 h-5 text-purple-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-purple-700">Outras Opções</h4>
-                <p className="text-sm text-muted-foreground">
-                  Outros métodos de pagamento
-                </p>
-              </div>
-              <div className="text-right">
-                <Badge
-                  variant="outline"
-                  className="border-secondary text-purple-700"
-                >
-                  Redirecionar
-                </Badge>
-                <p className="text-lg font-bold text-purple-600 mt-1">
-                  {formatBRL(totalPrice)}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </CardContent>
-      </Card>
-
-      {/* Action Button */}
-      <Button
-        onClick={handlePaymentConfirm}
-        className="w-full text-lg py-6"
-        disabled={!selectedPayment}
-      >
-        {selectedPayment === "pix"
-          ? `Pagar com PIX ${formatBRL(totalPrice * 0.95)}`
-          : selectedPayment === "other"
-            ? `Pagar com Outras Opções ${formatBRL(totalPrice)}`
-            : "Selecione uma forma de pagamento"}
-      </Button>
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              Você será redirecionado para completar o pagamento
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Após o redirecionamento, siga as instruções na página de pagamento
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

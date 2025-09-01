@@ -14,29 +14,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-}
+import { CartItem } from "@/lib/types";
 
 interface OtherPaymentPageProps {
   cart: CartItem[];
   totalPrice: number;
   onBack: () => void;
+  onPaymentComplete: () => void;
   onComplete: () => void;
-  onUpdateCart: (itemId: number, newQuantity: number) => void;
-  onRemoveFromCart: (itemId: number) => void;
 }
 
 export default function OtherPaymentPage({
   cart,
   totalPrice,
   onBack,
-  onUpdateCart,
-  onRemoveFromCart,
 }: OtherPaymentPageProps) {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
