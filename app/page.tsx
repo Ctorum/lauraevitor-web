@@ -12,9 +12,6 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-background dark:bg-gray-900 flex flex-col items-center justify-center">
       <section className="h-screen w-full bg-[#D9D9D9] dark:bg-gray-900 justify-center items-center">
-        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl font-bold text-center">
-          Laura e Vitor
-        </h1>
         <Image
           src={l78}
           alt="Laura e Vitor"
