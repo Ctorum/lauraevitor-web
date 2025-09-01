@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss"
-import tailwindcssAnimate from "tailwindcss-animate"
+import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: ["class"],
@@ -13,6 +13,10 @@ const config: Config = {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        third: {
+          DEFAULT: "hsl(var(--third))",
+          foreground: "hsl(var(--third-foreground))",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -64,8 +68,25 @@ const config: Config = {
       backgroundImage: {
         hero: "url('/banner.png')",
       },
+      height: {
+        header: "6rem",
+      },
+    },
+    keyframes: {
+      flipTop: {
+        "0%": { transform: "rotateX(0)" },
+        "100%": { transform: "rotateX(-90deg)" },
+      },
+      flipBottom: {
+        "0%": { transform: "rotateX(90deg)" },
+        "100%": { transform: "rotateX(0)" },
+      },
+    },
+    animation: {
+      animate_flip_top: "flipTop 0.3s ease-in forwards",
+      animate_flip_bottom: "flipBottom 0.3s ease-out 0.3s forwards",
     },
   },
   plugins: [tailwindcssAnimate],
-}
-export default config
+};
+export default config;
