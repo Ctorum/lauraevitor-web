@@ -60,7 +60,7 @@ export default function HowClothing() {
                     <ul className="text-lg text-[#355A72] dark:text-[#A1AFD1] font-medium mb-[3rem]">
                         <li>Roupas muito casuais, como jeans, camisetas e tênis de academia.</li>
                         <li>Estampas muito chamativas ou cores contrastantes. </li>
-                        <li>BRoupas com tecidos esportivos. </li>
+                        <li>Roupas com tecidos esportivos. </li>
                     </ul>
                     <h3 className="text-xl text-[#355A72] dark:text-[#A1AFD1] font-bold mb-[3rem]">Dicas adicionais:</h3>
                     <p className="text-lg text-[#355A72] dark:text-[#A1AFD1] font-medium">Preste atenção aos tecidos, que devem ser mais sofisticados. </p>

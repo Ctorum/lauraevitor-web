@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full max-w-[2100px] absolute z-20 px-4 py-6 m-200 h-header">
+    <header className="w-full max-w-[2100px] absolute z-9999 px-4 py-6 m-200 h-header">
       <div className="container mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
@@ -100,12 +100,12 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-10 pt-28">
+        <div className="md:hidden fixed inset-0 z-20 pt-28">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={toggleMobileMenu}
           ></div>
-          <div className="relative bg-white dark:bg-gray-800 rounded-t-3xl shadow-xl p-6 h-auto max-h-[80vh] overflow-y-auto mx-4 mt-4 animate-in slide-in-from-bottom duration-300">
+          <div className="z-20 relative bg-white dark:bg-gray-800 rounded-t-3xl shadow-xl p-6 h-auto max-h-[80vh] overflow-y-auto mx-4 mt-4 animate-in slide-in-from-bottom duration-300">
             <nav>
               <ul className="space-y-6 py-4">
                 <li>
