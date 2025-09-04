@@ -91,6 +91,7 @@ export default function Token() {
             pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
             maxLength={6}
             onComplete={handleTokenComplete}
+            inputMode="text"
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} className="w-12 h-20 sm:w-24 sm:h-24" />
