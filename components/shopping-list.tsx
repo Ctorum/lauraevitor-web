@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CheckoutPage from "./checkout-page";
 
 import { ShoppingItem, CartItem } from "@/lib/types";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function ShoppingListCart() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -103,9 +104,15 @@ export default function ShoppingListCart() {
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Shopping List</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Lista de Presentes
+          </h1>
           <p className="text-muted-foreground mt-2">
-            Add items to your cart and manage your shopping list
+            Adicione itens ao seu carrinho e gerencie sua lista de presentes
+          </p>
+          <p>
+            Os itens são meramente ilustrativos e não representam produtos
+            reais. O dinheiro é enviado diretamente para o casal
           </p>
         </div>
         <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
