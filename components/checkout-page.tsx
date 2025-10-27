@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { CartItem } from "@/lib/types";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface OtherPaymentPageProps {
   cart: CartItem[];
@@ -119,6 +120,13 @@ export default function OtherPaymentPage({
         <h3 className="font-semibold text-lg">
           Métodos de Pagamento Disponíveis
         </h3>
+        <Alert>
+          <AlertTitle>PIX</AlertTitle>
+          <AlertDescription>
+            Caso queira pagar no pix, pode fazer direto no pix do casal:
+            (11)98608-0044
+          </AlertDescription>
+        </Alert>
         {preferenceId && (
           <Wallet
             initialization={{
