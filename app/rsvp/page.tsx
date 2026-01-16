@@ -34,7 +34,16 @@ export default function Token() {
     error,
   } = useQuery({
     queryKey: ["guest", token],
-    queryFn: () => getGuestData(token),
+    queryFn: async () => {
+      const data = await getGuestData(token);
+      // Store original name for reference and blank the displayed name
+      // to force user to update it before confirming presence
+      return {
+        ...data,
+        originalName: data.name,
+        name: "",
+      };
+    },
     enabled: token.length === 6,
     retry: false,
   });

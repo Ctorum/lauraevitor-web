@@ -15,6 +15,7 @@ import {
   X,
   Clock,
   Pencil,
+  Info,
 } from "lucide-react";
 import api from "@/services/api.service";
 import { getEventStatusLabel } from "@/lib/get-event-status-label";
@@ -53,7 +54,10 @@ export default function GuestDetails({
   const [name, setName] = useState<string | null>(guest?.name || null);
   const [email, setEmail] = useState<string | null>(guest?.email || null);
   const [phone, setPhone] = useState<string | null>(guest?.phone || null);
-  const originalNameRef = useRef<string | null>(guest?.name || null);
+  // Use originalName if available (when name is blanked), otherwise use current name
+  const originalNameRef = useRef<string | null>(
+    (guest as any)?.originalName || guest?.name || null,
+  );
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -278,7 +282,9 @@ export default function GuestDetails({
       <div className="border-b border-gray-100 pb-4 sm:pb-6 mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 pt-14 sm:pt-0">
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center text-white text-lg sm:text-xl font-bold">
-            {guest.name.charAt(0).toUpperCase()}
+            {((guest as any)?.originalName || guest.name || "?")
+              .charAt(0)
+              .toUpperCase()}
           </div>
           <span className="relative sm:flex-1">
             <Input
@@ -599,22 +605,12 @@ export default function GuestDetails({
             {guest.rsvpStatusSecond === GuestEventStatus.PENDING && (
               <div className="mt-2 flex flex-col gap-2">
                 {!hasNameChanged && (
-                  <div className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-2 sm:p-3 flex items-start gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 flex-shrink-0 mt-0.5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>
-                      Por favor, atualize seu nome acima antes de confirmar sua
-                      presença.
+                  <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-2 sm:p-3 flex items-start gap-2">
+                    <Info className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 mt-0.5" />
+                    <span className="flex-1">
+                      <strong className="font-semibold">Atenção:</strong> É
+                      necessário atualizar e salvar seu nome acima antes de
+                      confirmar sua presença.
                     </span>
                   </div>
                 )}
