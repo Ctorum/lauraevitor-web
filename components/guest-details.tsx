@@ -53,8 +53,15 @@ export default function GuestDetails({
   const [name, setName] = useState<string | null>(guest?.name || null);
   const [email, setEmail] = useState<string | null>(guest?.email || null);
   const [phone, setPhone] = useState<string | null>(guest?.phone || null);
+  const originalNameRef = useRef<string | null>(guest?.name || null);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
+
+  // Check if name has been changed from original and saved
+  const hasNameChanged =
+    guest?.name !== originalNameRef.current &&
+    guest?.name !== null &&
+    guest?.name !== "";
 
   const dataMutation = useMutation({
     mutationFn: ({ token, data }: { token: string; data: Partial<Guest> }) =>
@@ -503,79 +510,8 @@ export default function GuestDetails({
                 {getEventStatusLabel(guest.rsvpStatusFirst!)}
               </motion.span>
             </div>
-            {guest.rsvpStatusFirst === GuestEventStatus.PENDING && (
-              <div className="mt-2 flex gap-2">
-                <Button
-                  onClick={() =>
-                    handleConfirmPresence("first", GuestEventStatus.CONFIRMED)
-                  }
-                  disabled={rsvpMutation.isPending}
-                  className="flex-1 relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 text-xs sm:text-sm"
-                  size="default"
-                >
-                  {rsvpMutation.isPending &&
-                  rsvpMutation.variables.eventType === "first" &&
-                  rsvpMutation.variables.status ===
-                    GuestEventStatus.CONFIRMED ? (
-                    <motion.span
-                      className="flex items-center gap-2"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline dark:text-gray-300">
-                        Confirmando...
-                      </span>
-                      <span className="sm:hidden dark:text-gray-300">
-                        Confirmando...
-                      </span>
-                    </motion.span>
-                  ) : (
-                    <>
-                      <span className="hidden sm:inline dark:text-gray-300">
-                        Confirmar presença
-                      </span>
-                      <span className="sm:hidden dark:text-gray-300">
-                        Confirmar presença
-                      </span>
-                    </>
-                  )}
-                </Button>
-                <Button
-                  onClick={() =>
-                    handleConfirmPresence("first", GuestEventStatus.DECLINED)
-                  }
-                  disabled={rsvpMutation.isPending}
-                  variant="outline"
-                  className="flex-1 relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 text-xs sm:text-sm border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                  size="default"
-                >
-                  {rsvpMutation.isPending &&
-                  rsvpMutation.variables.eventType === "first" &&
-                  rsvpMutation.variables.status ===
-                    GuestEventStatus.DECLINED ? (
-                    <motion.span
-                      className="flex items-center gap-2"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline">Recusando...</span>
-                      <span className="sm:hidden">Recusando...</span>
-                    </motion.span>
-                  ) : (
-                    <>
-                      <span className="hidden sm:inline">Infelizmente não</span>
-                      <span className="sm:hidden">Infelizmente não</span>
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
           </motion.div>
-          {/*<motion.div
+          <motion.div
             className="dark:bg-background bg-gray-50 rounded-lg p-3 sm:p-4 hover:bg-gray-100 transition-colors relative overflow-hidden"
             animate={
               celebratingEvent === "second"
@@ -661,44 +597,105 @@ export default function GuestDetails({
               </motion.span>
             </div>
             {guest.rsvpStatusSecond === GuestEventStatus.PENDING && (
-              <Button
-                onClick={() =>
-                  handleConfirmPresence("second", GuestEventStatus.CONFIRMED)
-                }
-                disabled={true}
-                //disabled={rsvpMutation.isPending}
-                className="mt-2 relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 w-full text-xs sm:text-sm"
-                size="default"
-              >
-                {rsvpMutation.isPending &&
-                rsvpMutation.variables.eventType === "second" ? (
-                  <motion.span
-                    className="flex items-center gap-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="hidden sm:inline dark:text-gray-300">
-                      Confirmando...
+              <div className="mt-2 flex flex-col gap-2">
+                {!hasNameChanged && (
+                  <div className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-2 sm:p-3 flex items-start gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 flex-shrink-0 mt-0.5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>
+                      Por favor, atualize seu nome acima antes de confirmar sua
+                      presença.
                     </span>
-                    <span className="sm:hidden dark:text-gray-300">
-                      Confirmando...
-                    </span>
-                  </motion.span>
-                ) : (
-                  <>
-                    <span className="hidden sm:inline dark:text-gray-300">
-                      Confirmar presença
-                    </span>
-                    <span className="sm:hidden dark:text-gray-300">
-                      Confirmar presença
-                    </span>
-                  </>
+                  </div>
                 )}
-              </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() =>
+                      handleConfirmPresence(
+                        "second",
+                        GuestEventStatus.CONFIRMED,
+                      )
+                    }
+                    disabled={rsvpMutation.isPending || !hasNameChanged}
+                    className="flex-1 relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    size="default"
+                    title={!hasNameChanged ? "Atualize seu nome primeiro" : ""}
+                  >
+                    {rsvpMutation.isPending &&
+                    rsvpMutation.variables.eventType === "second" &&
+                    rsvpMutation.variables.status ===
+                      GuestEventStatus.CONFIRMED ? (
+                      <motion.span
+                        className="flex items-center gap-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="hidden sm:inline dark:text-gray-300">
+                          Confirmando...
+                        </span>
+                        <span className="sm:hidden dark:text-gray-300">
+                          Confirmando...
+                        </span>
+                      </motion.span>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline dark:text-gray-300">
+                          Confirmar presença
+                        </span>
+                        <span className="sm:hidden dark:text-gray-300">
+                          Confirmar presença
+                        </span>
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      handleConfirmPresence("second", GuestEventStatus.DECLINED)
+                    }
+                    disabled={rsvpMutation.isPending}
+                    variant="outline"
+                    className="flex-1 relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 text-xs sm:text-sm border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    size="default"
+                  >
+                    {rsvpMutation.isPending &&
+                    rsvpMutation.variables.eventType === "second" &&
+                    rsvpMutation.variables.status ===
+                      GuestEventStatus.DECLINED ? (
+                      <motion.span
+                        className="flex items-center gap-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Loader2 className="animate-spin h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="hidden sm:inline">Recusando...</span>
+                        <span className="sm:hidden">Recusando...</span>
+                      </motion.span>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">
+                          Infelizmente não
+                        </span>
+                        <span className="sm:hidden">Infelizmente não</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
             )}
-          </motion.div>*/}
+          </motion.div>
         </div>
       </div>
     </motion.div>
