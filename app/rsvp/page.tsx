@@ -27,6 +27,8 @@ export default function Token() {
   const isMobile = useIsMobile();
 
   const [token, setToken] = useState<string>("");
+  const [isInitialFetch, setIsInitialFetch] = useState<boolean>(true);
+  const [previousToken, setPreviousToken] = useState<string>("");
 
   const {
     data: guestData,
@@ -36,12 +38,21 @@ export default function Token() {
     queryKey: ["guest", token],
     queryFn: async () => {
       const data = await getGuestData(token);
-      // Store original name for reference and blank the displayed name
-      // to force user to update it before confirming presence
+
+      // Only blank the name on initial fetch, not on refetches after saving
+      if (isInitialFetch) {
+        setIsInitialFetch(false);
+        return {
+          ...data,
+          originalName: data.name,
+          name: "",
+        };
+      }
+
+      // On refetches, preserve the original name but don't blank the current name
       return {
         ...data,
         originalName: data.name,
-        name: "",
       };
     },
     enabled: token.length === 6,
@@ -49,6 +60,11 @@ export default function Token() {
   });
 
   const handleTokenComplete = (value: string) => {
+    // Reset isInitialFetch when token changes
+    if (value !== previousToken) {
+      setIsInitialFetch(true);
+      setPreviousToken(value);
+    }
     setToken(value);
   };
 
@@ -72,6 +88,7 @@ export default function Token() {
             <Button
               onClick={() => {
                 setToken("");
+                setIsInitialFetch(true);
                 window.location.reload();
               }}
             >
